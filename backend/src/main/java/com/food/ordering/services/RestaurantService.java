@@ -28,4 +28,6 @@ public interface RestaurantService {
   public Restaurant updateRestaurantStatus(Long id) throws Exception;
 
   public List<Restaurant> findAllRestaurantsForAdmin();
+
+  public Restaurant approveRestaurant(Long id) throws Exception;
 }

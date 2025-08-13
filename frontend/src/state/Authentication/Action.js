@@ -46,9 +46,11 @@ export const login = (request) => async (dispatch) => {
       api.defaults.headers.common["Authorization"] = `Bearer ${data.jwt}`;
       dispatch({ type: LOGIN_SUCCESS, payload: data.jwt });
 
-      if (data.role === "ROLE_RESTAURANT_OWNER") {
+      // Se a role for de Dono de Restaurante OU de Admin, vai para o painel admin.
+      if (data.role === "ROLE_RESTAURANT_OWNER" || data.role === "ROLE_ADMIN") {
         request.navigate("/admin/restaurants");
       } else {
+        // Senão, é um cliente e vai para a página inicial.
         request.navigate("/");
       }
     }

@@ -13,4 +13,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
   List<Restaurant> findBySearchQuery(@Param("query") String query);
 
   Restaurant findByOwnerId(Long id);
+
+  List<Restaurant> findAllByApprovedTrue();
 }
