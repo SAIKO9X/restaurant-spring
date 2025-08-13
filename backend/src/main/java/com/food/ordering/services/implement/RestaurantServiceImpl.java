@@ -90,7 +90,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
   @Override
   public List<Restaurant> getAllRestaurant() {
-    return restaurantRepository.findAllByApprovedTrue();
+    return restaurantRepository.findAllByApprovedTrueAndActiveTrue();
   }
 
   @Override
@@ -163,6 +163,13 @@ public class RestaurantServiceImpl implements RestaurantService {
   public Restaurant approveRestaurant(Long id) throws Exception {
     Restaurant restaurant = findRestaurantById(id);
     restaurant.setApproved(true);
+    return restaurantRepository.save(restaurant);
+  }
+
+  @Override
+  public Restaurant toggleRestaurantActiveStatus(Long id) throws Exception {
+    Restaurant restaurant = findRestaurantById(id);
+    restaurant.setActive(!restaurant.isActive());
     return restaurantRepository.save(restaurant);
   }
 }

@@ -14,5 +14,5 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
   Restaurant findByOwnerId(Long id);
 
-  List<Restaurant> findAllByApprovedTrue();
+  List<Restaurant> findAllByApprovedTrueAndActiveTrue();
 }

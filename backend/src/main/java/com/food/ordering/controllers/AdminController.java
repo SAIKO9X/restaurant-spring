@@ -55,4 +55,14 @@ public class AdminController {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); // Se o user ID não existir
     }
   }
+
+  @PutMapping("/restaurants/{id}/toggle-active")
+  public ResponseEntity<Restaurant> toggleRestaurantActiveStatus(@PathVariable Long id) {
+    try {
+      Restaurant restaurant = restaurantService.toggleRestaurantActiveStatus(id);
+      return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+  }
 }

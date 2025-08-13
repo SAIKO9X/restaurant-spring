@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllRestaurantsAdmin,
   approveRestaurant,
+  toggleRestaurantActiveStatus,
 } from "../../state/Admin/Action";
 import {
   Table,
@@ -14,11 +15,12 @@ import {
   Paper,
   Button,
   Chip,
+  Box,
 } from "@mui/material";
 
 export const RestaurantsTable = () => {
   const dispatch = useDispatch();
-  const { restaurants, loading } = useSelector((store) => store.admin);
+  const { restaurants } = useSelector((store) => store.admin);
 
   useEffect(() => {
     dispatch(fetchAllRestaurantsAdmin());
@@ -26,6 +28,10 @@ export const RestaurantsTable = () => {
 
   const handleApproveRestaurant = (id) => {
     dispatch(approveRestaurant(id));
+  };
+
+  const handleToggleStatus = (id) => {
+    dispatch(toggleRestaurantActiveStatus(id));
   };
 
   return (
@@ -36,8 +42,9 @@ export const RestaurantsTable = () => {
             <TableCell>ID</TableCell>
             <TableCell>Nome</TableCell>
             <TableCell>Dono</TableCell>
+            <TableCell>Aprovação</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Ações</TableCell>
+            <TableCell align="center">Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -53,15 +60,34 @@ export const RestaurantsTable = () => {
                 />
               </TableCell>
               <TableCell>
-                {!restaurant.approved && (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleApproveRestaurant(restaurant.id)}
-                  >
-                    Aprovar
-                  </Button>
-                )}
+                <Chip
+                  label={restaurant.active ? "Ativo" : "Suspenso"}
+                  color={restaurant.active ? "success" : "error"}
+                />
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  {!restaurant.approved && (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="secondary"
+                      onClick={() => handleApproveRestaurant(restaurant.id)}
+                    >
+                      Aprovar
+                    </Button>
+                  )}
+                  {restaurant.approved && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color={restaurant.active ? "error" : "success"}
+                      onClick={() => handleToggleStatus(restaurant.id)}
+                    >
+                      {restaurant.active ? "Suspender" : "Reativar"}
+                    </Button>
+                  )}
+                </Box>
               </TableCell>
             </TableRow>
           ))}

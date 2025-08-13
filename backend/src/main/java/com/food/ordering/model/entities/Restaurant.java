@@ -43,6 +43,7 @@ public class Restaurant {
   private List<Category> categories = new ArrayList<>();
 
   private boolean open;
+  private boolean active = true;
   private boolean approved = false;
   private String name;
   private String description;

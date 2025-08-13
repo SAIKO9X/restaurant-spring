@@ -37,3 +37,26 @@ export const approveRestaurant = (restaurantId) => async (dispatch) => {
     });
   }
 };
+
+export const toggleRestaurantActiveStatus =
+  (restaurantId) => async (dispatch) => {
+    dispatch({ type: actions.TOGGLE_RESTAURANT_STATUS_REQUEST });
+    try {
+      const { data } = await api.put(
+        `/api/admin/restaurants/${restaurantId}/toggle-active`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
+      );
+      dispatch({
+        type: actions.TOGGLE_RESTAURANT_STATUS_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: actions.TOGGLE_RESTAURANT_STATUS_FAILURE,
+        payload: error.message,
+      });
+    }
+  };
