@@ -13,9 +13,9 @@ import { uploadImageToCloudinary } from "../../config/UploadToCloudinary";
 import { useDispatch } from "react-redux";
 import { createRestaurant } from "../../state/Restaurant/Action";
 import { useNavigate } from "react-router-dom";
-import * as Yup from "yup"; // Importar o Yup
+import * as Yup from "yup";
+import InputMask from "react-input-mask";
 
-// 1. Definir o Esquema de Validação
 const validationSchema = Yup.object({
   name: Yup.string().required("O nome do restaurante é obrigatório."),
   description: Yup.string()
@@ -24,13 +24,19 @@ const validationSchema = Yup.object({
   cuisineType: Yup.string().required("O tipo de cozinha é obrigatório."),
   streetAddress: Yup.string().required("O endereço é obrigatório."),
   stateProvince: Yup.string().required("O estado é obrigatório."),
-  postalCode: Yup.string().required("O código postal é obrigatório."),
+  // Valida o formato 99999-999
+  postalCode: Yup.string()
+    .matches(/^\d{5}-\d{3}$/, "O formato do CEP é inválido.")
+    .required("O código postal é obrigatório."),
   city: Yup.string().required("A cidade é obrigatória."),
   country: Yup.string().required("O país é obrigatório."),
   email: Yup.string()
     .email("O formato do email é inválido.")
     .required("O email de contato é obrigatório."),
-  mobile: Yup.string().required("O número de celular é obrigatório."),
+  // Valida o formato (99) 99999-9999
+  mobile: Yup.string()
+    .matches(/^\(\d{2}\) \d{5}-\d{4}$/, "O formato do celular é inválido.")
+    .required("O número de celular é obrigatório."),
   openingHours: Yup.string().required(
     "O horário de funcionamento é obrigatório."
   ),
@@ -106,7 +112,6 @@ export const CreateRestaurantForm = () => {
 
   const formik = useFormik({
     initialValues,
-    // 2. Ligar o esquema de validação ao Formik
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
@@ -119,8 +124,12 @@ export const CreateRestaurantForm = () => {
         </h1>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <Grid container spacing={2}>
-            {/* --- Campo de Imagens com Validação --- */}
+            {/* --- Campo de Imagens com Validação e Ajuda --- */}
             <Grid item xs={12}>
+              {/* NOVO: Título para a secção de imagens */}
+              <Typography variant="h6" sx={{ mb: 1, color: "secondary.main" }}>
+                Imagens do Restaurante *
+              </Typography>
               <div className="flex flex-wrap gap-5">
                 <input
                   accept="image/*"
@@ -128,13 +137,14 @@ export const CreateRestaurantForm = () => {
                   id="fileInput"
                   style={{ display: "none" }}
                   onChange={handleImageChange}
+                  disabled={uploadImage}
                 />
                 <label className="relative" htmlFor="fileInput">
                   <span className="w-24 h-24 cursor-pointer flex items-center justify-center p-3 border rounded-md border-zinc-600">
                     <AddPhotoAlternate className="text-white" />
                   </span>
                   {uploadImage && (
-                    <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center">
+                    <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center bg-black bg-opacity-50 rounded-md">
                       <CircularProgress color="secondary" />
                     </div>
                   )}
@@ -143,7 +153,7 @@ export const CreateRestaurantForm = () => {
                   {formik.values.images.map((image, index) => (
                     <div key={index} className="relative">
                       <img
-                        className="w-24 h-24 object-cover"
+                        className="w-24 h-24 object-cover rounded-md"
                         src={image}
                         alt="Foto do Restaurante"
                       />
@@ -151,39 +161,49 @@ export const CreateRestaurantForm = () => {
                         size="small"
                         sx={{
                           position: "absolute",
-                          top: "0",
-                          right: "0",
-                          outline: "none",
+                          top: 0,
+                          right: 0,
+                          backgroundColor: "rgba(0,0,0,0.6)",
+                          "&:hover": {
+                            backgroundColor: "rgba(0,0,0,0.8)",
+                          },
                         }}
                         onClick={() => handleRemoveImage(index)}
                       >
-                        <Close sx={{ fontSize: "1rem" }} />
+                        <Close sx={{ fontSize: "1rem", color: "white" }} />
                       </IconButton>
                     </div>
                   ))}
                 </div>
               </div>
-              {formik.touched.images && formik.errors.images && (
-                <Typography color="error" variant="caption">
-                  {formik.errors.images}
-                </Typography>
-              )}
+              {/* ALTERADO: Lógica para mostrar erro ou a dica */}
+              <Typography
+                color={
+                  formik.touched.images && formik.errors.images
+                    ? "error"
+                    : "text.secondary"
+                }
+                variant="caption"
+                sx={{ display: "block", mt: 1 }}
+              >
+                {formik.touched.images && formik.errors.images
+                  ? formik.errors.images
+                  : "Adicione uma ou mais fotos do seu espaço. A primeira imagem será a capa."}
+              </Typography>
             </Grid>
-
-            {/* --- Outros Campos com Validação --- */}
-            {/* 3. Adicionar error e helperText a cada TextField */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 id="name"
                 name="name"
                 color="secondary"
-                label="Nome"
+                label="Nome do Restaurante"
                 variant="outlined"
                 onChange={formik.handleChange}
                 value={formik.values.name}
                 error={formik.touched.name && Boolean(formik.errors.name)}
                 helperText={formik.touched.name && formik.errors.name}
+                required // NOVO
               />
             </Grid>
             <Grid item xs={12}>
@@ -194,15 +214,21 @@ export const CreateRestaurantForm = () => {
                 color="secondary"
                 label="Descrição"
                 variant="outlined"
+                multiline // NOVO: Permite múltiplas linhas para uma descrição melhor
+                rows={4} // NOVO: Altura inicial do campo
                 onChange={formik.handleChange}
                 value={formik.values.description}
                 error={
                   formik.touched.description &&
                   Boolean(formik.errors.description)
                 }
+                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.description && formik.errors.description
+                    ? formik.errors.description
+                    : "Fale sobre a história, o ambiente e os pratos principais do seu restaurante."
                 }
+                required // NOVO
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -219,9 +245,13 @@ export const CreateRestaurantForm = () => {
                   formik.touched.cuisineType &&
                   Boolean(formik.errors.cuisineType)
                 }
+                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.cuisineType && formik.errors.cuisineType
+                    ? formik.errors.cuisineType
+                    : "Ex: Italiana, Brasileira, Japonesa, Fast Food"
                 }
+                required // NOVO
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -238,19 +268,30 @@ export const CreateRestaurantForm = () => {
                   formik.touched.openingHours &&
                   Boolean(formik.errors.openingHours)
                 }
+                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.openingHours && formik.errors.openingHours
+                    ? formik.errors.openingHours
+                    : "Ex: Seg-Sex: 11:00 - 22:00, Sáb-Dom: 11:00 - 23:00"
                 }
+                required // NOVO
               />
+            </Grid>
+
+            {/* --- SEÇÃO DE ENDEREÇO --- */}
+            <Grid item xs={12}>
+              <Typography
+                variant="h6"
+                sx={{ mt: 2, mb: 1, color: "secondary.main" }}
+              >
+                Endereço
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                id="streetAddress"
                 name="streetAddress"
-                color="secondary"
-                label="Endereço"
-                variant="outlined"
+                label="Rua e Número"
                 onChange={formik.handleChange}
                 value={formik.values.streetAddress}
                 error={
@@ -260,16 +301,28 @@ export const CreateRestaurantForm = () => {
                 helperText={
                   formik.touched.streetAddress && formik.errors.streetAddress
                 }
+                required
+                color="secondary"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                id="stateProvince"
-                name="stateProvince"
+                name="city"
+                label="Cidade"
+                onChange={formik.handleChange}
+                value={formik.values.city}
+                error={formik.touched.city && Boolean(formik.errors.city)}
+                helperText={formik.touched.city && formik.errors.city}
+                required
                 color="secondary"
-                label="Estado/Província"
-                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                name="stateProvince"
+                label="Estado"
                 onChange={formik.handleChange}
                 value={formik.values.stateProvince}
                 error={
@@ -279,132 +332,157 @@ export const CreateRestaurantForm = () => {
                 helperText={
                   formik.touched.stateProvince && formik.errors.stateProvince
                 }
+                required
+                color="secondary"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                id="postalCode"
-                name="postalCode"
-                color="secondary"
-                label="Código Postal"
-                variant="outlined"
-                onChange={formik.handleChange}
+            <Grid item xs={12} md={6}>
+              <InputMask
+                mask="99999-999"
                 value={formik.values.postalCode}
-                error={
-                  formik.touched.postalCode && Boolean(formik.errors.postalCode)
-                }
-                helperText={
-                  formik.touched.postalCode && formik.errors.postalCode
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                id="city"
-                name="city"
-                color="secondary"
-                label="Cidade"
-                variant="outlined"
                 onChange={formik.handleChange}
-                value={formik.values.city}
-                error={formik.touched.city && Boolean(formik.errors.city)}
-                helperText={formik.touched.city && formik.errors.city}
-              />
+                onBlur={formik.handleBlur}
+              >
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    fullWidth
+                    required
+                    name="postalCode"
+                    label="Código Postal"
+                    error={
+                      formik.touched.postalCode &&
+                      Boolean(formik.errors.postalCode)
+                    }
+                    helperText={
+                      formik.touched.postalCode && formik.errors.postalCode
+                    }
+                    color="secondary"
+                  />
+                )}
+              </InputMask>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                id="country"
                 name="country"
-                color="secondary"
                 label="País"
-                variant="outlined"
                 onChange={formik.handleChange}
                 value={formik.values.country}
                 error={formik.touched.country && Boolean(formik.errors.country)}
                 helperText={formik.touched.country && formik.errors.country}
+                required
+                color="secondary"
               />
+            </Grid>
+
+            {/* --- SEÇÃO DE CONTATO --- */}
+            <Grid item xs={12}>
+              <Typography
+                variant="h6"
+                sx={{ mt: 2, mb: 1, color: "secondary.main" }}
+              >
+                Contato e Redes Sociais
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                id="email"
                 name="email"
-                color="secondary"
-                label="Email"
-                variant="outlined"
+                label="Email de Contato"
                 onChange={formik.handleChange}
                 value={formik.values.email}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                required
+                color="secondary"
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                id="mobile"
-                name="mobile"
-                color="secondary"
-                label="Celular"
-                variant="outlined"
-                onChange={formik.handleChange}
+              <InputMask
+                mask="(99) 99999-9999"
                 value={formik.values.mobile}
-                error={formik.touched.mobile && Boolean(formik.errors.mobile)}
-                helperText={formik.touched.mobile && formik.errors.mobile}
-              />
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    fullWidth
+                    required
+                    name="mobile"
+                    label="Celular de Contato"
+                    error={
+                      formik.touched.mobile && Boolean(formik.errors.mobile)
+                    }
+                    helperText={formik.touched.mobile && formik.errors.mobile}
+                    color="secondary"
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
-                id="twitter"
                 name="twitter"
-                color="secondary"
                 label="Twitter"
-                variant="outlined"
                 onChange={formik.handleChange}
                 value={formik.values.twitter}
                 error={formik.touched.twitter && Boolean(formik.errors.twitter)}
-                helperText={formik.touched.twitter && formik.errors.twitter}
+                helperText={
+                  formik.touched.twitter && formik.errors.twitter
+                    ? formik.errors.twitter
+                    : "Opcional. Insira a URL completa."
+                }
+                color="secondary"
               />
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
-                id="instagram"
                 name="instagram"
-                color="secondary"
                 label="Instagram"
-                variant="outlined"
                 onChange={formik.handleChange}
                 value={formik.values.instagram}
                 error={
                   formik.touched.instagram && Boolean(formik.errors.instagram)
                 }
-                helperText={formik.touched.instagram && formik.errors.instagram}
+                helperText={
+                  formik.touched.instagram && formik.errors.instagram
+                    ? formik.errors.instagram
+                    : "Opcional. Insira a URL completa."
+                }
+                color="secondary"
               />
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
-                id="facebook"
                 name="facebook"
-                color="secondary"
                 label="Facebook"
-                variant="outlined"
                 onChange={formik.handleChange}
                 value={formik.values.facebook}
                 error={
                   formik.touched.facebook && Boolean(formik.errors.facebook)
                 }
-                helperText={formik.touched.facebook && formik.errors.facebook}
+                helperText={
+                  formik.touched.facebook && formik.errors.facebook
+                    ? formik.errors.facebook
+                    : "Opcional. Insira a URL completa."
+                }
+                color="secondary"
               />
             </Grid>
           </Grid>
 
-          <Button variant="contained" color="secondary" type="submit">
-            adicionar restaurante
+          <Button
+            variant="contained"
+            color="secondary"
+            type="submit"
+            sx={{ mt: 2, py: 1.5 }}
+            fullWidth
+          >
+            Criar Restaurante
           </Button>
         </form>
       </div>
