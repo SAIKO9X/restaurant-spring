@@ -1,0 +1,32 @@
+# Nome do workflow que aparecerá na aba "Actions" do GitHub
+name: CI Backend - Build & Test
+
+# Define o gatilho: este workflow roda em todo push para a branch 'main'
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  # Define um "job" (trabalho) chamado build-and-test
+  build-and-test:
+    # A máquina virtual onde o job vai rodar
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clona o seu repositório para a máquina virtual
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura o ambiente Java 17 usando a distribuição Temurin
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      # 3. Executa o comando do Maven para compilar e testar
+      #    -B roda em modo "batch" (não interativo)
+      #    --file aponta para o pom.xml do backend
+      #    'package' é uma fase do Maven que compila o código e roda os testes
+      - name: Build and test with Maven
+        run: ./mvnw -B package --file backend/pom.xml

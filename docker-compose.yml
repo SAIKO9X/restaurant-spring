@@ -12,15 +12,30 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      # Mapeia a porta 3307 do seu computador para a porta 3306 do container
-      # Usar 3307 evita conflitos com outros MySQL que você possa ter rodando localmente
       - "3307:3306"
     volumes:
-      # Monta o script de inicialização para ser executado na primeira vez
       - ./backend/src/main/resources/db:/docker-entrypoint-initdb.d
-      # Cria um volume para persistir os dados do banco de dados
       - mysql-data:/var/lib/mysql
 
+  # NOVO: Serviço da Aplicação Backend
+  backend:
+    # 'build' instrui o Docker a criar uma imagem a partir do Dockerfile nesta pasta
+    build: ./backend
+    container_name: food-ordering-app
+    restart: on-failure
+    # 'depends_on' garante que o banco de dados inicie antes da aplicação
+    depends_on:
+      - db
+    ports:
+      # Mapeia a porta 8080 do container para a 8080 da sua máquina
+      - "8080:8080"
+    environment:
+      # Passa as variáveis de ambiente do arquivo .env para a aplicação Spring
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      # A URL de conexão agora usa o nome do serviço 'db'
+      - DATABASE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE}
+
 volumes:
-  # Define o volume nomeado para os dados do MySQL
   mysql-data:

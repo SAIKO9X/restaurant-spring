@@ -6,8 +6,8 @@ import com.food.ordering.request.LoginRequest;
 import com.food.ordering.response.AuthResponse;
 import com.food.ordering.services.AuthService;
 import com.food.ordering.services.PasswordResetService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
     try {
       AuthResponse authResponse = authService.authenticateUser(request);
       return new ResponseEntity<>(authResponse, HttpStatus.OK);
