@@ -1,0 +1,66 @@
+# Arquivo .gitignore unificado para o projeto food-ordering
+
+## Geral (IDE, Logs, Sistema Operacional)
+# Ignora arquivos de log
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Ignora arquivos de configuração de IDEs e editores
+.idea/
+.vscode/*
+!/.vscode/extensions.json
+.sts4-cache/
+*.iws
+*.iml
+*.ipr
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignora arquivos de sistema operacional (macOS)
+.DS_Store
+
+#===================================================================
+
+## Backend (Java/Spring)
+# Arquivos e pastas gerados pelo Maven/Spring
+backend/target/
+backend/HELP.md
+
+# Regras para desconsiderar certas pastas 'target' (mantido do original)
+!backend/src/main/**/target/
+!backend/src/test/**/target/
+
+# Arquivos de configuração de IDEs específicos do Java
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings
+backend/.springBeans
+
+# Arquivos do NetBeans
+backend/nbproject/private/
+backend/nbbuild/
+backend/dist/
+backend/nbdist/
+backend/.nb-gradle/
+backend/build/
+!backend/src/main/**/build/
+!backend/src/test/**/build/
+
+#===================================================================
+
+## Frontend (Node/React)
+# Dependências e arquivos de build
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
