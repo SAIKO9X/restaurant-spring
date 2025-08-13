@@ -39,6 +39,9 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - STRIPE_URL=${STRIPE_URL}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_FULLNAME=${ADMIN_FULLNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
 
 volumes:
   mysql-data:

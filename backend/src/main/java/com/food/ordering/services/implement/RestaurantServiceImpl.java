@@ -153,4 +153,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     restaurant.setOpen(!restaurant.isOpen());
     return restaurantRepository.save(restaurant);
   }
+
+  @Override
+  public List<Restaurant> findAllRestaurantsForAdmin() {
+    return restaurantRepository.findAll();
+  }
 }
