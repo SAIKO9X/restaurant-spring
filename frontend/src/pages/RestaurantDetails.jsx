@@ -5,6 +5,10 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  TextField,
+  Button,
+  Box,
+  Rating,
 } from "@mui/material";
 import { LocationOn, Today } from "@mui/icons-material";
 import { useEffect, useState } from "react";
@@ -16,6 +20,9 @@ import {
   getRestaurantCategories,
 } from "../state/Restaurant/Action";
 import { getMenuItemsByRestaurantId } from "../state/Menu/Action";
+import { getRestaurantReviews, submitReview } from "../state/Review/Action";
+import { ReviewCard } from "../components/Restaurant/ReviewCard";
+import { ChatModal } from "../components/Chat/ChatModal";
 
 const foodTypes = [
   { label: "Todas", value: "all" },
@@ -25,10 +32,22 @@ const foodTypes = [
 ];
 
 export const RestaurantDetails = () => {
-  const [foodType, setFoodType] = useState("all");
-  const dispatch = useDispatch();
-  const { restaurant, menu } = useSelector((store) => store);
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const [foodType, setFoodType] = useState("all");
+  const [openChat, setOpenChat] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const { restaurant, menu, review, auth } = useSelector((store) => store);
+
+  const handleOpenChat = async () => {
+    try {
+      const chat = await dispatch(createChat(id));
+      setSelectedChat(chat);
+      setOpenChat(true);
+    } catch (error) {
+      console.error("Failed to create or open chat", error);
+    }
+  };
 
   const [filters, setFilters] = useState({
     vegetarian: false,
@@ -61,6 +80,7 @@ export const RestaurantDetails = () => {
     dispatch(getRestaurantById({ restaurantId: id }));
     dispatch(getRestaurantCategories(id));
     dispatch(getMenuItemsByRestaurantId(id, filters));
+    dispatch(getRestaurantReviews(id));
   }, [dispatch, id, filters]);
 
   return (
@@ -107,6 +127,15 @@ export const RestaurantDetails = () => {
           <Today />
           <span>{restaurant.restaurant?.openingHours}</span>
         </p>
+
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleOpenChat}
+          startIcon={<Chat />}
+        >
+          Iniciar Chat com o Restaurante
+        </Button>
       </div>
 
       <Divider />
@@ -175,6 +204,57 @@ export const RestaurantDetails = () => {
           ))}
         </div>
       </div>
+
+      <Divider sx={{ my: 4 }} />
+
+      <section>
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ mb: 2, fontFamily: "Cormorant Upright", color: "primary.main" }}
+        >
+          Avaliações e Comentários
+        </Typography>
+
+        {/* Formulário para Nova Avaliação */}
+        {auth.user && (
+          <Box component="form" onSubmit={handleReviewSubmit} sx={{ mb: 4 }}>
+            <Typography variant="h6">Deixe a sua avaliação</Typography>
+            <Rating
+              name="simple-controlled"
+              value={rating}
+              onChange={(event, newValue) => {
+                setRating(newValue);
+              }}
+            />
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              label="Escreva o seu comentário..."
+              variant="outlined"
+              color="secondary"
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              sx={{ my: 2 }}
+            />
+            <Button type="submit" variant="contained" color="secondary">
+              Enviar Avaliação
+            </Button>
+          </Box>
+        )}
+
+        {/* Lista de Avaliações */}
+        {review.reviews.map((item) => (
+          <ReviewCard key={item.id} review={item} />
+        ))}
+      </section>
+
+      <ChatModal
+        open={openChat}
+        handleClose={() => setOpenChat(false)}
+        chat={selectedChat}
+      />
     </section>
   );
 };
