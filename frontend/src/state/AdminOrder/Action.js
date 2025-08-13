@@ -1,4 +1,4 @@
-import api from "../../config/api";
+import api, { API_RESTAURANT_URL } from "../../config/api";
 import * as actions from "./ActionType";
 
 export const getRestaurantsOrder =
@@ -7,7 +7,7 @@ export const getRestaurantsOrder =
 
     try {
       const { data } = await api.get(
-        `/api/admin/order/restaurant/${restaurantId}`,
+        `${API_RESTAURANT_URL}/order/restaurant/${restaurantId}`,
         {
           params: { order_status: orderStatus },
           headers: {
@@ -20,7 +20,6 @@ export const getRestaurantsOrder =
       console.log("get Restaurants Order success", data);
     } catch (error) {
       console.log(error);
-
       dispatch({
         type: actions.GET_RESTAURANTS_ORDER_FAILURE,
         payload: error.message,
@@ -33,7 +32,7 @@ export const updateOrderStatus = (orderId, orderStatus) => async (dispatch) => {
 
   try {
     const { data } = await api.put(
-      `/api/admin/order/${orderId}/${orderStatus}`,
+      `${API_RESTAURANT_URL}/order/${orderId}/${orderStatus}`,
       {},
       {
         headers: {
@@ -43,7 +42,6 @@ export const updateOrderStatus = (orderId, orderStatus) => async (dispatch) => {
     );
 
     dispatch({ type: actions.UPDATE_ORDER_STATUS_SUCCESS, payload: data });
-
     console.log("update Order Status success", data);
   } catch (error) {
     console.log("update Order Status error", error);

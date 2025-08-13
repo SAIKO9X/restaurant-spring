@@ -27,13 +27,16 @@ public class SecurityConfig {
   @Autowired
   private JwtTokenValidator jwtTokenValidator;
 
+  // DENTRO DE SecurityConfig.java
+
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .csrf(AbstractHttpConfigurer::disable)
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .authorizeHttpRequests(auth -> {
-        auth.requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
+        auth.requestMatchers("/api/admin/**").hasRole("ADMIN")
+          .requestMatchers("/api/my-restaurant/**").hasRole("RESTAURANT_OWNER")
           .requestMatchers("/api/**").authenticated()
           .anyRequest().permitAll();
       }).addFilterBefore(jwtTokenValidator, UsernamePasswordAuthenticationFilter.class);

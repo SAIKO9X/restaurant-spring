@@ -1,11 +1,11 @@
 import * as actions from "./ActionType";
-import api from "../../config/api";
+import api, { API_RESTAURANT_URL } from "../../config/api";
 
 export const createMenuItem = (menuItemData) => async (dispatch) => {
   dispatch({ type: actions.CREATE_MENU_ITEM_REQUEST });
   try {
     const { data } = await api.post(
-      "/api/admin/foods",
+      `${API_RESTAURANT_URL}/foods`,
       menuItemData.menuItemData,
       {
         headers: {
@@ -27,7 +27,7 @@ export const createMenuItem = (menuItemData) => async (dispatch) => {
 export const deleteMenuItem = (menuItemId) => async (dispatch) => {
   dispatch({ type: actions.DELETE_MENU_ITEM_REQUEST });
   try {
-    await api.delete(`/api/admin/foods/${menuItemId}`, {
+    await api.delete(`${API_RESTAURANT_URL}/foods/${menuItemId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
@@ -67,7 +67,7 @@ export const updateMenuItemAvailability = (menuItemId) => async (dispatch) => {
   dispatch({ type: actions.UPDATE_MENU_ITEM_REQUEST });
   try {
     const { data } = await api.put(
-      `/api/admin/foods/${menuItemId}`,
+      `${API_RESTAURANT_URL}/foods/${menuItemId}`,
       {},
       {
         headers: {
@@ -109,7 +109,7 @@ export const updateMenuItem =
     dispatch({ type: actions.UPDATE_MENU_ITEM_REQUEST });
     try {
       const { data } = await api.put(
-        `/api/admin/foods/edit/${menuItemId}`,
+        `${API_RESTAURANT_URL}/foods/edit/${menuItemId}`,
         menuItemData,
         {
           headers: {

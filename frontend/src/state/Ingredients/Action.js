@@ -1,13 +1,12 @@
 import * as actions from "./ActionType";
-import api from "../../config/api";
+import api, { API_RESTAURANT_URL } from "../../config/api";
 
 export const createIngredientCategory =
   (ingredientCategoryRequest) => async (dispatch) => {
     dispatch({ type: actions.CREATE_INGREDIENT_CATEGORY_REQUEST });
-
     try {
       const { data } = await api.post(
-        "/api/admin/ingredients/category",
+        `${API_RESTAURANT_URL}/ingredients/category`,
         ingredientCategoryRequest,
         {
           headers: {
@@ -34,10 +33,9 @@ export const createIngredientCategory =
 
 export const createIngredientItem = (ingredientRequest) => async (dispatch) => {
   dispatch({ type: actions.CREATE_INGREDIENT_REQUEST });
-
   try {
     const { data } = await api.post(
-      "/api/admin/ingredients/item",
+      `${API_RESTAURANT_URL}/ingredients/item`,
       ingredientRequest,
       {
         headers: {
@@ -61,10 +59,9 @@ export const createIngredientItem = (ingredientRequest) => async (dispatch) => {
 
 export const updateIngredientStock = (ingredientId) => async (dispatch) => {
   dispatch({ type: actions.UPDATE_STOCK_REQUEST });
-
   try {
     const { data } = await api.put(
-      `/api/admin/ingredients/${ingredientId}/stoke`,
+      `${API_RESTAURANT_URL}/ingredients/${ingredientId}/stoke`,
       null,
       {
         headers: {
@@ -85,10 +82,9 @@ export const updateIngredientStock = (ingredientId) => async (dispatch) => {
 
 export const getRestaurantIngredients = (restaurantId) => async (dispatch) => {
   dispatch({ type: actions.GET_INGREDIENTS_REQUEST });
-
   try {
     const { data } = await api.get(
-      `/api/admin/ingredients/restaurants/${restaurantId}`,
+      `${API_RESTAURANT_URL}/ingredients/restaurants/${restaurantId}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -110,10 +106,9 @@ export const getRestaurantIngredients = (restaurantId) => async (dispatch) => {
 
 export const getIngredientCategories = (restaurantId) => async (dispatch) => {
   dispatch({ type: actions.GET_INGREDIENT_CATEGORY_REQUEST });
-
   try {
     const { data } = await api.get(
-      `/api/admin/ingredients/restaurants/${restaurantId}/category`,
+      `${API_RESTAURANT_URL}/ingredients/restaurants/${restaurantId}/category`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,

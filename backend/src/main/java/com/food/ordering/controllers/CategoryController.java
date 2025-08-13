@@ -16,7 +16,7 @@ public class CategoryController {
 
   private final CategoryService categoryService;
 
-  @PostMapping("/admin/categories")
+  @PostMapping("/my-restaurant/categories")
   public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam("restaurantId") Long restaurantId) throws Exception {
     Category createdCategory = categoryService.createCategory(category.getName(), restaurantId);
 
@@ -30,7 +30,7 @@ public class CategoryController {
     return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
-  @DeleteMapping("/admin/categories/{id}")
+  @DeleteMapping("/my-restaurant/categories/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) throws Exception {
     categoryService.deleteCategory(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
