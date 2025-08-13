@@ -7,7 +7,7 @@ import { AddLocationAltOutlined } from "@mui/icons-material";
 import { AddAddressForm } from "../components/Cart/AddAddressForm";
 import { getUserAddresses } from "../state/Address/Action";
 import { createOrder } from "../state/Order/Action";
-import { findCart } from "../state/Cart/Action"; // Adicione esta importação
+import { findCart } from "../state/Cart/Action";
 
 export const style = {
   position: "absolute",
