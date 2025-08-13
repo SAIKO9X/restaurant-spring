@@ -5,6 +5,7 @@ import com.food.ordering.model.entities.IngredientsItem;
 import com.food.ordering.request.IngredientCategoryRequest;
 import com.food.ordering.request.IngredientRequest;
 import com.food.ordering.services.IngredientsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/ingredients")
 public class IngredientController {
 
-  @Autowired
-  private IngredientsService ingredientsService;
+  private final IngredientsService ingredientsService;
 
   @PostMapping("/category")
   public ResponseEntity<IngredientCategory> createIngredientCategory(@RequestBody IngredientCategoryRequest request) throws Exception {
@@ -38,7 +39,7 @@ public class IngredientController {
   }
 
   @GetMapping("/restaurants/{id}")
-  public ResponseEntity<List<IngredientsItem>> getRestaurantIngredients(@PathVariable Long id) throws Exception {
+  public ResponseEntity<List<IngredientsItem>> getRestaurantIngredients(@PathVariable Long id) {
     List<IngredientsItem> items = ingredientsService.findRestaurantsIngredients(id);
     return new ResponseEntity<>(items, HttpStatus.OK);
   }

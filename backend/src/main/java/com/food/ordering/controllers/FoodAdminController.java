@@ -8,23 +8,19 @@ import com.food.ordering.response.MessageResponse;
 import com.food.ordering.services.FoodService;
 import com.food.ordering.services.RestaurantService;
 import com.food.ordering.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/foods")
 public class FoodAdminController {
 
-  @Autowired
-  private FoodService foodService;
-
-  @Autowired
-  private UserService userService;
-
-  @Autowired
-  private RestaurantService restaurantService;
+  private final FoodService foodService;
+  private final RestaurantService restaurantService;
 
   @PostMapping
   public ResponseEntity<FoodDTO> createFood(@RequestBody CreateFoodRequest request) throws Exception {

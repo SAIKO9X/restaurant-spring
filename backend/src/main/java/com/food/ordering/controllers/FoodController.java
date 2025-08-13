@@ -3,9 +3,7 @@ package com.food.ordering.controllers;
 import com.food.ordering.model.dto.FoodDTO;
 import com.food.ordering.model.entities.Food;
 import com.food.ordering.services.FoodService;
-import com.food.ordering.services.RestaurantService;
-import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,17 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/foods")
 public class FoodController {
 
-  @Autowired
-  private FoodService foodService;
-
-  @Autowired
-  private UserService userService;
-
-  @Autowired
-  private RestaurantService restaurantService;
+  private final FoodService foodService;
 
   @GetMapping("/search")
   public ResponseEntity<List<FoodDTO>> searchFood(@RequestParam String name) throws Exception {
@@ -40,7 +32,7 @@ public class FoodController {
     @RequestParam(required = false, defaultValue = "false") boolean vegetarian,
     @RequestParam(required = false, defaultValue = "false") boolean noVegetarian,
     @RequestParam(required = false, defaultValue = "false") boolean seasonal
-  ) throws Exception {
+  ) {
     List<Food> foods = foodService.getRestaurantsFood(restaurantId, vegetarian, noVegetarian, seasonal, food_category);
     List<FoodDTO> foodDTOs = foods.stream().map(foodService::convertToDTO).collect(Collectors.toList());
     return new ResponseEntity<>(foodDTOs, HttpStatus.OK);

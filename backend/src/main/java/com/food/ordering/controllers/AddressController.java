@@ -3,7 +3,7 @@ package com.food.ordering.controllers;
 import com.food.ordering.model.entities.Address;
 import com.food.ordering.model.entities.User;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class AddressController {
 
-  @Autowired
-  private UserService userService;
+  private final UserService userService;
 
   @PostMapping("/address")
   public ResponseEntity<Address> addAddress(@RequestBody Address address, @RequestHeader("Authorization") String jwt) throws Exception {

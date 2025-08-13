@@ -5,6 +5,7 @@ import com.food.ordering.model.entities.Restaurant;
 import com.food.ordering.repositories.CategoryRepository;
 import com.food.ordering.services.CategoryService;
 import com.food.ordering.services.RestaurantService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-  @Autowired
-  private RestaurantService restaurantService;
-
-  @Autowired
-  private CategoryRepository categoryRepository;
+  private final RestaurantService restaurantService;
+  private final CategoryRepository categoryRepository;
 
   @Override
   public Category createCategory(String name, Long restaurantId) throws Exception {

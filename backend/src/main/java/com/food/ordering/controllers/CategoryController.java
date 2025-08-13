@@ -2,8 +2,7 @@ package com.food.ordering.controllers;
 
 import com.food.ordering.model.entities.Category;
 import com.food.ordering.services.CategoryService;
-import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class CategoryController {
 
-  @Autowired
-  private CategoryService categoryService;
-
-  @Autowired
-  private UserService userService;
+  private final CategoryService categoryService;
 
   @PostMapping("/admin/categories")
   public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam("restaurantId") Long restaurantId) throws Exception {

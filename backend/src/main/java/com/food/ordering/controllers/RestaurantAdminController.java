@@ -6,20 +6,18 @@ import com.food.ordering.request.CreateRestaurantRequest;
 import com.food.ordering.response.MessageResponse;
 import com.food.ordering.services.RestaurantService;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/restaurants")
 public class RestaurantAdminController {
 
-  @Autowired
-  private RestaurantService restaurantService;
-
-  @Autowired
-  private UserService userService;
+  private final RestaurantService restaurantService;
+  private final UserService userService;
 
   @PostMapping
   public ResponseEntity<Restaurant> createRestaurant(@RequestBody CreateRestaurantRequest request, @RequestHeader("Authorization") String jwt) throws Exception {

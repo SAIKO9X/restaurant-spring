@@ -9,23 +9,19 @@ import com.food.ordering.repositories.RestaurantRepository;
 import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.request.CreateRestaurantRequest;
 import com.food.ordering.services.RestaurantService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
-  @Autowired
-  private RestaurantRepository restaurantRepository;
-
-  @Autowired
-  private AddressRepository addressRepository;
-
-  @Autowired
-  private UserRepository userRepository;
+  private final RestaurantRepository restaurantRepository;
+  private final AddressRepository addressRepository;
+  private final UserRepository userRepository;
 
   @Override
   public Restaurant createRestaurant(CreateRestaurantRequest request, User user) {

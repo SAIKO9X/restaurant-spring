@@ -7,20 +7,19 @@ import com.food.ordering.request.AddCartItemRequest;
 import com.food.ordering.request.UpdateCartItemRequest;
 import com.food.ordering.services.CartService;
 import com.food.ordering.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class CartController {
 
-  @Autowired
-  private CartService cartService;
-
-  @Autowired
-  private UserService userService;
+  private final CartService cartService;
+  private final UserService userService;
 
   @PostMapping("/cart/add")
   public ResponseEntity<CartItem> addItemToCart(@RequestBody AddCartItemRequest request, @RequestHeader("Authorization") String jwt) throws Exception {

@@ -4,17 +4,15 @@ import com.food.ordering.model.entities.User;
 import com.food.ordering.providers.JWTProvider;
 import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private JWTProvider jwtProvider;
+  private final UserRepository userRepository;
+  private final JWTProvider jwtProvider;
 
   @Override
   public User findUserByJwtToken(String jwt) throws Exception {

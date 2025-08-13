@@ -5,7 +5,7 @@ import com.food.ordering.model.entities.User;
 import com.food.ordering.repositories.PasswordResetTokenRepository;
 import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.services.PasswordResetService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +13,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private PasswordResetTokenRepository tokenRepository;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  @Autowired
-  private EmailService emailService;
+  private final UserRepository userRepository;
+  private final PasswordResetTokenRepository tokenRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
   @Override
   public void createPasswordResetToken(String email) throws Exception {

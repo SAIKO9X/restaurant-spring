@@ -10,7 +10,7 @@ import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.request.LoginRequest;
 import com.food.ordering.response.AuthResponse;
 import com.food.ordering.services.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,22 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  @Autowired
-  private JWTProvider jwtProvider;
-
-  @Autowired
-  private CustomerUserDetailsService customerUserDetailsService;
-
-  @Autowired
-  private CartRepository cartRepository;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JWTProvider jwtProvider;
+  private final CustomerUserDetailsService customerUserDetailsService;
+  private final CartRepository cartRepository;
 
   @Override
   public AuthResponse registerUser(User user) throws Exception {

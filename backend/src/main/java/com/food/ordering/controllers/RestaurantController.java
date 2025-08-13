@@ -5,7 +5,7 @@ import com.food.ordering.model.entities.Restaurant;
 import com.food.ordering.model.entities.User;
 import com.food.ordering.services.RestaurantService;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/restaurants")
 public class RestaurantController {
 
-  @Autowired
-  private RestaurantService restaurantService;
-
-  @Autowired
-  private UserService userService;
+  private final RestaurantService restaurantService;
+  private final UserService userService;
 
   @GetMapping("/search")
   public ResponseEntity<List<Restaurant>> searchRestaurant(@RequestParam String keyword) {

@@ -6,6 +6,7 @@ import com.food.ordering.request.LoginRequest;
 import com.food.ordering.response.AuthResponse;
 import com.food.ordering.services.AuthService;
 import com.food.ordering.services.PasswordResetService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
-  @Autowired
-  private AuthService authService;
-
-  @Autowired
-  private PasswordResetService passwordResetService;
+  private final AuthService authService;
+  private final PasswordResetService passwordResetService;
 
   @PostMapping("/register")
   public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) {

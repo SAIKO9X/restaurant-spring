@@ -2,8 +2,7 @@ package com.food.ordering.controllers;
 
 import com.food.ordering.model.entities.Order;
 import com.food.ordering.services.OrderService;
-import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class OrderAdminController {
 
-  @Autowired
-  private OrderService orderService;
-
-  @Autowired
-  private UserService userService;
+  private final OrderService orderService;
 
   @GetMapping("/order/restaurant/{id}")
   public ResponseEntity<List<Order>> getRestaurantsOrder(@PathVariable Long id, @RequestParam(required = false) String order_status) throws Exception {

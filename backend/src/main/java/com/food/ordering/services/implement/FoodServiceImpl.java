@@ -9,7 +9,7 @@ import com.food.ordering.request.CreateFoodRequest;
 import com.food.ordering.response.RestaurantResponse;
 import com.food.ordering.response.UserResponse;
 import com.food.ordering.services.FoodService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService {
 
-  @Autowired
-  private FoodRepository foodRepository;
+  private final FoodRepository foodRepository;
 
   @Override
   public Food createFood(CreateFoodRequest request, Category category, Restaurant restaurant) {

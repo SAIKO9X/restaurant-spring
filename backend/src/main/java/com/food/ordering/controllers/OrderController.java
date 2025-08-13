@@ -8,7 +8,7 @@ import com.food.ordering.response.PaymentResponse;
 import com.food.ordering.services.OrderService;
 import com.food.ordering.services.PaymentService;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class OrderController {
 
-  @Autowired
-  private OrderService orderService;
-
-  @Autowired
-  private UserService userService;
-
-  @Autowired
-  private PaymentService paymentService;
+  private final OrderService orderService;
+  private final UserService userService;
+  private final PaymentService paymentService;
 
 
   @PostMapping("/order")

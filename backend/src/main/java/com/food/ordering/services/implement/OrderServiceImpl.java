@@ -7,7 +7,7 @@ import com.food.ordering.request.OrderRequest;
 import com.food.ordering.services.CartService;
 import com.food.ordering.services.OrderService;
 import com.food.ordering.services.RestaurantService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,28 +15,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-  @Autowired
-  private OrderRepository orderRepository;
-
-  @Autowired
-  private OrderItemRepository orderItemRepository;
-
-  @Autowired
-  private AddressRepository addressRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private RestaurantRepository restaurantRepository;
-
-  @Autowired
-  private RestaurantService restaurantService;
-
-  @Autowired
-  private CartService cartService;
+  private final OrderRepository orderRepository;
+  private final OrderItemRepository orderItemRepository;
+  private final AddressRepository addressRepository;
+  private final UserRepository userRepository;
+  private final RestaurantService restaurantService;
+  private final CartService cartService;
 
   @Override
   public Order createOrder(OrderRequest request, User user) throws Exception {

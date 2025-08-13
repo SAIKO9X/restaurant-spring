@@ -10,25 +10,19 @@ import com.food.ordering.request.AddCartItemRequest;
 import com.food.ordering.services.CartService;
 import com.food.ordering.services.FoodService;
 import com.food.ordering.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-  @Autowired
-  private CartRepository cartRepository;
-
-  @Autowired
-  private UserService userService;
-
-  @Autowired
-  private CartItemRepository cartItemRepository;
-
-  @Autowired
-  private FoodService foodService;
+  private final CartRepository cartRepository;
+  private final UserService userService;
+  private final CartItemRepository cartItemRepository;
+  private final FoodService foodService;
 
 
   @Override
@@ -79,7 +73,7 @@ public class CartServiceImpl implements CartService {
     CartItem updatedItem = cartItemRepository.save(item);
 
     Cart cart = item.getCart();
-    cart.setTotal(calculateCartTotals(cart)); 
+    cart.setTotal(calculateCartTotals(cart));
     cartRepository.save(cart);
 
     return updatedItem;

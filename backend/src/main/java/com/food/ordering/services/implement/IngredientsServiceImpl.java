@@ -7,23 +7,19 @@ import com.food.ordering.repositories.IngredientsCategoryRepository;
 import com.food.ordering.repositories.IngredientsItemRepository;
 import com.food.ordering.services.IngredientsService;
 import com.food.ordering.services.RestaurantService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class IngredientsServiceImpl implements IngredientsService {
 
-  @Autowired
-  private IngredientsItemRepository itemRepository;
-
-  @Autowired
-  private IngredientsCategoryRepository categoryRepository;
-
-  @Autowired
-  private RestaurantService restaurantService;
+  private final IngredientsItemRepository itemRepository;
+  private final IngredientsCategoryRepository categoryRepository;
+  private final RestaurantService restaurantService;
 
   @Override
   public IngredientCategory createIngredientCategory(String name, Long restaurantId) throws Exception {
