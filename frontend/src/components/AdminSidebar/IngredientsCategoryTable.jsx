@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { CreateIngredientCategoryForm } from "./CreateIngredientCategoryForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getIngredientCategories } from "../../state/Ingredients/Action";
+import { EmptyState } from "../Admin/EmptyState";
 
 const style = {
   position: "absolute",
@@ -65,35 +66,41 @@ export const IngredientsCategoryTable = () => {
           }
         />
 
-        <TableContainer>
-          <Table aria-label="tabela de categoria dos ingredientes">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Id</TableCell>
-                <TableCell align="left">Nome</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ingredients?.categories?.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="left">{item.id}</TableCell>
-                  <TableCell align="left">{item.name}</TableCell>
+        {ingredients?.categories?.length > 0 ? (
+          <TableContainer>
+            <Table aria-label="tabela de categoria dos ingredientes">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Id</TableCell>
+                  <TableCell align="left">Nome</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {ingredients.categories.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">{item.id}</TableCell>
+                    <TableCell align="left">{item.name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Box sx={{ p: 2 }}>
+            <EmptyState
+              title="Organize os seus ingredientes"
+              message="Crie categorias para os seus ingredientes, como 'Pães', 'Queijos' ou 'Molhos'. Isto vai ajudá-lo a adicionar ingredientes aos seus pratos mais tarde."
+              buttonText="Criar Categoria"
+              onButtonClick={handleOpen}
+            />
+          </Box>
+        )}
       </Card>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <CreateIngredientCategoryForm />
         </Box>

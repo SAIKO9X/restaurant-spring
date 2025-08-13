@@ -1,3 +1,5 @@
+// frontend/src/components/AdminSidebar/CategoryTable.jsx
+
 import { AppRegistration } from "@mui/icons-material";
 import {
   Box,
@@ -16,6 +18,7 @@ import { useEffect, useState } from "react";
 import { CreateFoodCategoryForm } from "./CreateFoodCategoryForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantCategories } from "../../state/Restaurant/Action";
+import { EmptyState } from "../Admin/EmptyState";
 
 const style = {
   position: "absolute",
@@ -56,46 +59,52 @@ export const CategoryTable = () => {
               color: "secondary.main",
             },
           }}
-          title={"Tipos de Comida"}
+          title={"Categorias de Comida"}
           action={
-            <IconButton onClick={handleOpen} aria-label="editar">
+            <IconButton onClick={handleOpen} aria-label="criar categoria">
               <AppRegistration />
             </IconButton>
           }
         />
 
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="tabela de categorias de comida"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Id</TableCell>
-                <TableCell align="left">Nome</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {restaurant?.categories?.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="left">{item.id}</TableCell>
-                  <TableCell align="left">{item.name}</TableCell>
+        {restaurant?.categories?.length > 0 ? (
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 650 }}
+              aria-label="tabela de categorias de comida"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Id</TableCell>
+                  <TableCell align="left">Nome</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {restaurant.categories.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">{item.id}</TableCell>
+                    <TableCell align="left">{item.name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Box sx={{ p: 2 }}>
+            <EmptyState
+              title="Crie a sua primeira categoria"
+              message="Categorias ajudam a organizar o seu menu. Por exemplo: 'Hambúrgueres', 'Bebidas', 'Sobremesas'."
+              buttonText="Criar Categoria"
+              onButtonClick={handleOpen}
+            />
+          </Box>
+        )}
       </Card>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <CreateFoodCategoryForm />
         </Box>

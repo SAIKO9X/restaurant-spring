@@ -20,6 +20,7 @@ import {
   getRestaurantIngredients,
   updateIngredientStock,
 } from "../../state/Ingredients/Action";
+import { EmptyState } from "../Admin/EmptyState";
 
 const style = {
   position: "absolute",
@@ -73,46 +74,52 @@ export const IngredientsTable = () => {
           }
         />
 
-        <TableContainer>
-          <Table aria-label="tabela de ingredientes">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Id</TableCell>
-                <TableCell align="left">Nome</TableCell>
-                <TableCell align="left">Categoria</TableCell>
-                <TableCell align="left">Disponibilidade</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ingredients?.ingredients?.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="left">{item.id}</TableCell>
-                  <TableCell align="left">{item.name}</TableCell>
-                  <TableCell align="left">{item.category.name}</TableCell>
-                  <TableCell align="left">
-                    <Button
-                      onClick={() => handleUpdateStoking(item.id)}
-                      color={item.stoke ? "secondary" : "error"}
-                    >
-                      {item.stoke ? "em estoque" : "sem estoque"}
-                    </Button>
-                  </TableCell>
+        {ingredients?.ingredients?.length > 0 ? (
+          <TableContainer>
+            <Table aria-label="tabela de ingredientes">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Id</TableCell>
+                  <TableCell align="left">Nome</TableCell>
+                  <TableCell align="left">Categoria</TableCell>
+                  <TableCell align="left">Disponibilidade</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {ingredients.ingredients.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">{item.id}</TableCell>
+                    <TableCell align="left">{item.name}</TableCell>
+                    <TableCell align="left">{item.category.name}</TableCell>
+                    <TableCell align="left">
+                      <Button
+                        onClick={() => handleUpdateStoking(item.id)}
+                        color={item.stoke ? "secondary" : "error"}
+                      >
+                        {item.stoke ? "em estoque" : "sem estoque"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Box sx={{ p: 2 }}>
+            <EmptyState
+              title="Adicione os seus ingredientes"
+              message="Para adicionar um ingrediente, você precisa primeiro de criar uma Categoria de Ingredientes (no painel ao lado). Depois, poderá adicionar ingredientes como 'Pão Brioche' à categoria 'Pães'."
+              buttonText="Adicionar Ingrediente"
+              onButtonClick={handleOpen}
+            />
+          </Box>
+        )}
       </Card>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <CreateIngredientForm />
         </Box>

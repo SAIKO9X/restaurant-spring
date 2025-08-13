@@ -22,6 +22,7 @@ import {
 } from "../../state/Menu/Action";
 import { useEffect, useState } from "react";
 import { EditMenuForm } from "../Menu/EditMenuForm";
+import { EmptyState } from "../Admin/EmptyState";
 
 const modalStyle = {
   position: "absolute",
@@ -71,7 +72,7 @@ export const MenuTable = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedMenuItemId(null);
-    dispatch(getMenuItemsByRestaurantId(restaurant?.id, filters)); // Atualiza a lista ao fechar
+    dispatch(getMenuItemsByRestaurantId(restaurant?.id, filters));
   };
 
   return (
@@ -96,55 +97,67 @@ export const MenuTable = () => {
           </IconButton>
         }
       />
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">Imagem</TableCell>
-              <TableCell align="left">Nome</TableCell>
-              <TableCell align="left">Preço</TableCell>
-              <TableCell align="left">Ingredientes</TableCell>
-              <TableCell align="left">Disponibilidade</TableCell>
-              <TableCell align="left">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {menu?.menuItems?.map((item) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="left">
-                  <Avatar src={item.images[0]} />
-                </TableCell>
-                <TableCell align="left">{item.name}</TableCell>
-                <TableCell align="left">{item.price + " R$"}</TableCell>
-                <TableCell align="left">
-                  {item.ingredients.map((ingredient) => (
-                    <Chip
-                      key={ingredient.id}
-                      label={ingredient.name}
-                      size="small"
-                      color="secondary"
-                    />
-                  ))}
-                </TableCell>
-                <TableCell align="left">
-                  {item.available ? "disponível" : "indisponível"}
-                </TableCell>
-                <TableCell align="left">
-                  <IconButton onClick={() => handleOpenModal(item.id)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteFood(item.id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
+
+      {menu?.menuItems?.length > 0 ? (
+        <TableContainer>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Imagem</TableCell>
+                <TableCell align="left">Nome</TableCell>
+                <TableCell align="left">Preço</TableCell>
+                <TableCell align="left">Ingredientes</TableCell>
+                <TableCell align="left">Disponibilidade</TableCell>
+                <TableCell align="left">Ações</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {menu?.menuItems?.map((item) => (
+                <TableRow
+                  key={item.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell align="left">
+                    <Avatar src={item.images[0]} />
+                  </TableCell>
+                  <TableCell align="left">{item.name}</TableCell>
+                  <TableCell align="left">{item.price + " R$"}</TableCell>
+                  <TableCell align="left">
+                    {item.ingredients.map((ingredient) => (
+                      <Chip
+                        key={ingredient.id}
+                        label={ingredient.name}
+                        size="small"
+                        color="secondary"
+                      />
+                    ))}
+                  </TableCell>
+                  <TableCell align="left">
+                    {item.available ? "disponível" : "indisponível"}
+                  </TableCell>
+                  <TableCell align="left">
+                    <IconButton onClick={() => handleOpenModal(item.id)}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteFood(item.id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Box sx={{ p: 2 }}>
+          <EmptyState
+            title="Nenhum Prato no Menu"
+            message="O seu menu está vazio. Adicione o seu primeiro prato para que os clientes possam começar a pedir."
+            buttonText="Adicionar Prato"
+            onButtonClick={() => navigate("/admin/restaurants/add_menu")}
+          />
+        </Box>
+      )}
 
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={modalStyle}>
