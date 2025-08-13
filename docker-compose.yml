@@ -6,36 +6,39 @@ services:
     image: mysql:8.0
     container_name: food-ordering-db
     restart: always
+    env_file: ./.env
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
       - ./backend/src/main/resources/db:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      start_period: 10s
 
-  # NOVO: Serviço da Aplicação Backend
+  # Serviço da Aplicação Backend
   backend:
-    # 'build' instrui o Docker a criar uma imagem a partir do Dockerfile nesta pasta
     build: ./backend
     container_name: food-ordering-app
     restart: on-failure
-    # 'depends_on' garante que o banco de dados inicie antes da aplicação
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
-      # Mapeia a porta 8080 do container para a 8080 da sua máquina
       - "8080:8080"
+    env_file: ./.env
     environment:
-      # Passa as variáveis de ambiente do arquivo .env para a aplicação Spring
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      # A URL de conexão agora usa o nome do serviço 'db'
-      - DATABASE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE}
+      - DATABASE_URL=jdbc:mysql://db:3306/${DB_DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - STRIPE_URL=${STRIPE_URL}
 
 volumes:
   mysql-data:

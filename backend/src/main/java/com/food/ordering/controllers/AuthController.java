@@ -49,7 +49,7 @@ public class AuthController {
       passwordResetService.createPasswordResetToken(email);
       return new ResponseEntity<>("E-mail de redefinição enviado", HttpStatus.OK);
     } catch (Exception e) {
-      System.out.println("Erro ao processar recuperação de senha: " + e.getMessage()); // Log de erro
+      System.out.println("Erro ao processar recuperação de senha: " + e.getMessage());
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
   }
