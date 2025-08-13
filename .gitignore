@@ -1,5 +1,3 @@
-# Arquivo .gitignore unificado para o projeto food-ordering
-
 ## Geral (IDE, Logs, Sistema Operacional)
 # Ignora arquivos de log
 logs
@@ -26,8 +24,6 @@ lerna-debug.log*
 
 # Ignora arquivos de sistema operacional (macOS)
 .DS_Store
-
-#===================================================================
 
 ## Backend (Java/Spring)
 # Arquivos e pastas gerados pelo Maven/Spring
@@ -56,11 +52,12 @@ backend/build/
 !backend/src/main/**/build/
 !backend/src/test/**/build/
 
-#===================================================================
-
 ## Frontend (Node/React)
 # Dependências e arquivos de build
 frontend/node_modules/
 frontend/dist/
 frontend/dist-ssr/
 frontend/*.local
+
+# Arquivo de variáveis de ambiente - NÃO ENVIAR PARA O GIT!
+.env
