@@ -44,4 +44,10 @@ public class RestaurantController {
     RestaurantDTO restaurant = restaurantService.addToFavorites(id, user);
     return new ResponseEntity<>(restaurant, HttpStatus.OK);
   }
+
+  @GetMapping("/top-rated")
+  public ResponseEntity<List<Restaurant>> getTopRatedRestaurants(@RequestParam(defaultValue = "5") int limit) {
+    List<Restaurant> restaurants = restaurantService.findTopRatedRestaurants(limit);
+    return new ResponseEntity<>(restaurants, HttpStatus.OK);
+  }
 }

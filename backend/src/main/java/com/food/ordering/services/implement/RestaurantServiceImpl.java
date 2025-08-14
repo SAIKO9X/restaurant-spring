@@ -10,6 +10,8 @@ import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.request.CreateRestaurantRequest;
 import com.food.ordering.services.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -171,5 +173,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     Restaurant restaurant = findRestaurantById(id);
     restaurant.setActive(!restaurant.isActive());
     return restaurantRepository.save(restaurant);
+  }
+
+  @Override
+  public List<Restaurant> findTopRatedRestaurants(int limit) {
+    Pageable pageable = PageRequest.of(0, limit);
+    return restaurantRepository.findTopRatedRestaurants(pageable);
   }
 }

@@ -29,6 +29,8 @@ export const restaurantReducer = (state = initialState, action) => {
         loading: true,
         error: null,
       };
+    case actions.GET_TOP_RATED_RESTAURANTS_REQUEST:
+      return { ...state, loading: true, error: null };
 
     case actions.CREATE_RESTAURANT_SUCCESS:
     case actions.GET_RESTAURANT_BY_ID_SUCCESS:
@@ -39,14 +41,12 @@ export const restaurantReducer = (state = initialState, action) => {
         loading: false,
         restaurant: action.payload,
       };
-
     case actions.GET_ALL_RESTAURANTS_SUCCESS:
       return {
         ...state,
         loading: false,
         restaurants: action.payload,
       };
-
     case actions.DELETE_RESTAURANT_SUCCESS:
       return {
         ...state,
@@ -59,39 +59,8 @@ export const restaurantReducer = (state = initialState, action) => {
             ? null
             : state.restaurant,
       };
-
-    case actions.CREATE_EVENTS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        events: [...state.events, action.payload],
-        restaurantsEvents: [...state.restaurantsEvents, action.payload],
-      };
-
-    case actions.GET_ALL_EVENTS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        events: action.payload,
-      };
-
-    case actions.DELETE_EVENTS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        events: state.events.filter((event) => event.id !== action.payload),
-        restaurantsEvents: state.restaurantsEvents.filter(
-          (event) => event.id !== action.payload
-        ),
-      };
-
-    case actions.GET_RESTAURANTS_EVENTS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        restaurantsEvents: action.payload,
-      };
-
+    case actions.GET_TOP_RATED_RESTAURANTS_SUCCESS:
+      return { ...state, loading: false, topRated: action.payload };
     case actions.CREATE_CATEGORY_SUCCESS:
       return {
         ...state,
@@ -127,6 +96,8 @@ export const restaurantReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
+    case actions.GET_TOP_RATED_RESTAURANTS_FAILURE:
+      return { ...state, loading: false, error: action.payload };
 
     default:
       return state;

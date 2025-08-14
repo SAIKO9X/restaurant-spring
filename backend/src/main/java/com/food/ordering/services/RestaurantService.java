@@ -32,4 +32,6 @@ public interface RestaurantService {
   public Restaurant approveRestaurant(Long id) throws Exception;
 
   public Restaurant toggleRestaurantActiveStatus(Long id) throws Exception;
+
+  List<Restaurant> findTopRatedRestaurants(int limit);
 }

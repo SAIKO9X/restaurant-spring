@@ -227,3 +227,19 @@ export const getRestaurantCategories = (restaurantId) => async (dispatch) => {
     return null;
   }
 };
+
+export const getTopRatedRestaurants = (limit) => async (dispatch) => {
+  dispatch({ type: actions.GET_TOP_RATED_RESTAURANTS_REQUEST });
+  try {
+    const { data } = await api.get(`/api/restaurants/top-rated?limit=${limit}`);
+    dispatch({
+      type: actions.GET_TOP_RATED_RESTAURANTS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: actions.GET_TOP_RATED_RESTAURANTS_FAILURE,
+      payload: error.message,
+    });
+  }
+};

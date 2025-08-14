@@ -1,68 +1,103 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Header } from "../components/Header/Header";
 import { RestaurantCard } from "../components/Restaurant/RestaurantCard";
-import { MenuCard } from "../components/Restaurant/MenuCard"; // Importe o novo componente
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getAllRestaurants } from "../state/Restaurant/Action";
+import { MenuCard } from "../components/Menu/MenuCard";
+import {
+  getAllRestaurants,
+  getTopRatedRestaurants,
+} from "../state/Restaurant/Action";
 import { findCart } from "../state/Cart/Action";
 import { getTopOrderedFoods } from "../state/Menu/Action";
 
 export const Home = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { restaurants } = useSelector((store) => store.restaurant);
-  const { topOrderedFoods, loadingTopOrdered, errorTopOrdered } = useSelector(
-    (store) => store.menu
-  );
+  const { restaurant, menu } = useSelector((store) => store);
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   useEffect(() => {
     if (jwt) {
       dispatch(getAllRestaurants(jwt));
       dispatch(findCart(jwt));
       dispatch(getTopOrderedFoods(5));
+      dispatch(getTopRatedRestaurants(5));
     }
   }, [dispatch, jwt]);
 
   return (
     <section className="pt-16">
       <Header />
-      <div className="flex flex-col justify-evenly h-screen">
+      <div className="px-5 lg:px-20 pt-10">
         {jwt ? (
           <>
-            <section className="px-5 lg:px-20 pt-10">
-              <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
-                Pratos mais pedidos
-              </h1>
-              {loadingTopOrdered ? (
-                <p>Carregando...</p>
-              ) : errorTopOrdered ? (
-                <p>Erro ao carregar pratos: {errorTopOrdered}</p>
-              ) : topOrderedFoods.length > 0 ? (
-                <div className="flex flex-wrap gap-4">
-                  {topOrderedFoods.map((item) => (
+            <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="secondary"
+                indicatorColor="secondary"
+                aria-label="seções da página inicial"
+              >
+                <Tab label="Restaurantes" />
+                <Tab label="Pratos Mais Pedidos" />
+                <Tab label="Melhores Avaliados" />
+              </Tabs>
+            </Box>
+
+            {/* Conteúdo da Aba 0: Todos os Restaurantes */}
+            {tabValue === 0 && (
+              <section>
+                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
+                  Peça nos restaurantes selecionados
+                </h1>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  {restaurant.restaurants.map((item) => (
+                    <RestaurantCard key={item.id} item={item} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Conteúdo da Aba 1: Pratos Mais Pedidos */}
+            {tabValue === 1 && (
+              <section>
+                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
+                  Os pratos que todos amam
+                </h1>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  {menu.topOrderedFoods.map((item) => (
                     <MenuCard key={item.id} item={item} />
                   ))}
                 </div>
-              ) : (
-                <p>Nenhum prato em destaque no momento.</p>
-              )}
-            </section>
+              </section>
+            )}
 
-            <section className="px-5 lg:px-20 pt-10">
-              <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
-                Peça nos restaurantes selecionados
-              </h1>
-              <div className="flex flex-wrap gap-4">
-                {restaurants.map((item) => (
-                  <RestaurantCard key={item.id} item={item} />
-                ))}
-              </div>
-            </section>
+            {/* Conteúdo da Aba 2: Restaurantes Mais Bem Avaliados */}
+            {tabValue === 2 && (
+              <section>
+                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
+                  Os favoritos da comunidade
+                </h1>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  {restaurant.topRated.map((item) => (
+                    <RestaurantCard key={item.id} item={item} />
+                  ))}
+                </div>
+              </section>
+            )}
           </>
         ) : (
-          <p className="text-2xl lg:text-4xl font-cormorant text-center font-semibold text-gray-400 pt-[25%]">
-            Faça login para acessar nossos restaurantes.
-          </p>
+          <div className="h-screen flex items-center justify-center">
+            <Typography variant="h4" className="font-cormorant text-gray-400">
+              Faça login para descobrir os melhores sabores.
+            </Typography>
+          </div>
         )}
       </div>
     </section>
