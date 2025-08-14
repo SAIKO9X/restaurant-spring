@@ -18,15 +18,17 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Configura o ambiente Java 17 usando a distribuição Temurin
-      - name: Set up JDK 17
+       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
+          cache: "maven" # Adiciona cache do Maven para builds mais rápidos
 
-      # 3. Executa o comando do Maven para compilar e testar
-      #    -B roda em modo "batch" (não interativo)
-      #    --file aponta para o pom.xml do backend
-      #    'package' é uma fase do Maven que compila o código e roda os testes
+      # Garante que o script do Maven pode ser executado
+      - name: Make mvnw executable
+        run: chmod +x backend/mvnw
+
+      # O passo de build continua igual
       - name: Build and Test with Maven
         run: ./mvnw -B clean install --file backend/pom.xml
