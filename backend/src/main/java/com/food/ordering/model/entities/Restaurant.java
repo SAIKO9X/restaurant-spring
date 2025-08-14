@@ -62,7 +62,8 @@ public class Restaurant {
   private String openingHours;
 
   @ElementCollection
-  @Column(length = 1000)
+  @CollectionTable(name = "restaurant_images", joinColumns = @JoinColumn(name = "restaurant_id"))
+  @Column(name = "image_url", length = 1000)
   private List<String> images;
 
   @CreationTimestamp
