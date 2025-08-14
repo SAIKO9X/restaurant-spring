@@ -9,8 +9,9 @@ import {
   Button,
   Box,
   Rating,
+  Typography,
 } from "@mui/material";
-import { LocationOn, Today } from "@mui/icons-material";
+import { Chat, LocationOn, Today } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { MenuCard } from "../components/Restaurant/MenuCard";
 import { useParams } from "react-router-dom";
@@ -23,6 +24,7 @@ import { getMenuItemsByRestaurantId } from "../state/Menu/Action";
 import { getRestaurantReviews, submitReview } from "../state/Review/Action";
 import { ReviewCard } from "../components/Restaurant/ReviewCard";
 import { ChatModal } from "../components/Chat/ChatModal";
+import { createChat } from "../state/Chat/Action";
 
 const foodTypes = [
   { label: "Todas", value: "all" },
@@ -38,6 +40,20 @@ export const RestaurantDetails = () => {
   const [openChat, setOpenChat] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const { restaurant, menu, review, auth } = useSelector((store) => store);
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(0);
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    const reviewData = {
+      restaurantId: id,
+      rating: rating,
+      comment: reviewText,
+    };
+    dispatch(submitReview(reviewData));
+    setReviewText("");
+    setRating(0);
+  };
 
   const handleOpenChat = async () => {
     try {

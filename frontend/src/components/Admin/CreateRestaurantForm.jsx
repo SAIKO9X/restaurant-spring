@@ -126,7 +126,6 @@ export const CreateRestaurantForm = () => {
           <Grid container spacing={2}>
             {/* --- Campo de Imagens com Validação e Ajuda --- */}
             <Grid item xs={12}>
-              {/* NOVO: Título para a secção de imagens */}
               <Typography variant="h6" sx={{ mb: 1, color: "secondary.main" }}>
                 Imagens do Restaurante *
               </Typography>
@@ -176,7 +175,6 @@ export const CreateRestaurantForm = () => {
                   ))}
                 </div>
               </div>
-              {/* ALTERADO: Lógica para mostrar erro ou a dica */}
               <Typography
                 color={
                   formik.touched.images && formik.errors.images
@@ -203,7 +201,7 @@ export const CreateRestaurantForm = () => {
                 value={formik.values.name}
                 error={formik.touched.name && Boolean(formik.errors.name)}
                 helperText={formik.touched.name && formik.errors.name}
-                required // NOVO
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -214,21 +212,20 @@ export const CreateRestaurantForm = () => {
                 color="secondary"
                 label="Descrição"
                 variant="outlined"
-                multiline // NOVO: Permite múltiplas linhas para uma descrição melhor
-                rows={4} // NOVO: Altura inicial do campo
+                multiline
+                rows={4}
                 onChange={formik.handleChange}
                 value={formik.values.description}
                 error={
                   formik.touched.description &&
                   Boolean(formik.errors.description)
                 }
-                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.description && formik.errors.description
                     ? formik.errors.description
                     : "Fale sobre a história, o ambiente e os pratos principais do seu restaurante."
                 }
-                required // NOVO
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -245,13 +242,12 @@ export const CreateRestaurantForm = () => {
                   formik.touched.cuisineType &&
                   Boolean(formik.errors.cuisineType)
                 }
-                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.cuisineType && formik.errors.cuisineType
                     ? formik.errors.cuisineType
                     : "Ex: Italiana, Brasileira, Japonesa, Fast Food"
                 }
-                required // NOVO
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -268,13 +264,12 @@ export const CreateRestaurantForm = () => {
                   formik.touched.openingHours &&
                   Boolean(formik.errors.openingHours)
                 }
-                // ALTERADO: Mostra erro ou a dica
                 helperText={
                   formik.touched.openingHours && formik.errors.openingHours
                     ? formik.errors.openingHours
                     : "Ex: Seg-Sex: 11:00 - 22:00, Sáb-Dom: 11:00 - 23:00"
                 }
-                required // NOVO
+                required
               />
             </Grid>
 

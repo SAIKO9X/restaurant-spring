@@ -31,7 +31,9 @@ const style = {
 export const ChatModal = ({ open, handleClose, chat }) => {
   const dispatch = useDispatch();
   const { messages } = useSelector((store) => store.chat);
-  const { auth } = useSelector((store) => store.auth);
+  // --- CORREÇÃO AQUI ---
+  // Obtenha o estado 'auth' completo
+  const auth = useSelector((store) => store.auth);
   const [messageContent, setMessageContent] = useState("");
 
   useEffect(() => {
@@ -59,18 +61,19 @@ export const ChatModal = ({ open, handleClose, chat }) => {
                 key={msg.id}
                 sx={{
                   justifyContent:
-                    msg.sender.id === auth.user.id ? "flex-end" : "flex-start",
+                    // Use optional chaining para segurança
+                    msg.sender.id === auth.user?.id ? "flex-end" : "flex-start",
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  {msg.sender.id !== auth.user.id && (
+                  {msg.sender.id !== auth.user?.id && (
                     <Avatar>{msg.sender.fullName[0]}</Avatar>
                   )}
                   <ListItemText
                     primary={msg.content}
                     secondary={msg.sender.fullName}
                   />
-                  {msg.sender.id === auth.user.id && (
+                  {msg.sender.id === auth.user?.id && (
                     <Avatar>{auth.user.fullName[0]}</Avatar>
                   )}
                 </Box>

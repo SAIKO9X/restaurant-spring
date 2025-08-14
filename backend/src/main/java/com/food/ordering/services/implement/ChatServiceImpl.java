@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +24,21 @@ public class ChatServiceImpl implements ChatService {
 
   @Override
   public Chat createChat(User customer, Long restaurantId) throws Exception {
+    // Primeiro, procure por um chat existente
+    Optional<Chat> existingChat = chatRepository.findByCustomerIdAndRestaurantId(customer.getId(), restaurantId);
+
+    // Se o chat já existir, retorne-o
+    if (existingChat.isPresent()) {
+      return existingChat.get();
+    }
+
+    // Se não existir, crie um novo
     Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
-    Chat chat = new Chat();
-    chat.setCustomer(customer);
-    chat.setRestaurant(restaurant);
-    return chatRepository.save(chat);
+    Chat newChat = new Chat();
+    newChat.setCustomer(customer);
+    newChat.setRestaurant(restaurant);
+
+    return chatRepository.save(newChat);
   }
 
   @Override
