@@ -16,7 +16,6 @@ public class AdminDataLoader implements CommandLineRunner {
   private final UserRepository userRepository;
   private final AuthService authService;
 
-  // Injeta os valores do ficheiro .env
   @Value("${ADMIN_EMAIL}")
   private String adminEmail;
 
@@ -28,7 +27,6 @@ public class AdminDataLoader implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    // Verifica se o utilizador admin já existe
     if (userRepository.findByEmail(adminEmail) == null) {
       System.out.println("---- Criando utilizador ADMIN padrão ----");
 
@@ -38,7 +36,7 @@ public class AdminDataLoader implements CommandLineRunner {
       admin.setPassword(adminPassword);
       admin.setRole(USER_ROLE.ROLE_ADMIN);
 
-      // Usa o mesmo serviço de registo para garantir que a senha é encriptada
+      // Usa o serviço de registo para garantir que a senha é encriptada
       authService.registerUser(admin);
 
       System.out.println("---- Utilizador ADMIN criado com sucesso ----");

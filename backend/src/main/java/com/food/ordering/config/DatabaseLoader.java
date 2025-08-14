@@ -4,8 +4,10 @@ import com.food.ordering.model.dto.ContactInformation;
 import com.food.ordering.model.entities.*;
 import com.food.ordering.model.enums.USER_ROLE;
 import com.food.ordering.repositories.*;
+import com.food.ordering.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,15 +17,16 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Order(2)
 public class DatabaseLoader implements CommandLineRunner {
 
-  private final UserRepository userRepository;
   private final RestaurantRepository restaurantRepository;
   private final CategoryRepository categoryRepository;
   private final IngredientsCategoryRepository ingredientsCategoryRepository;
   private final IngredientsItemRepository ingredientsItemRepository;
   private final FoodRepository foodRepository;
   private final AddressRepository addressRepository;
+  private final AuthService authService;
 
   @Override
   @Transactional
@@ -35,33 +38,39 @@ public class DatabaseLoader implements CommandLineRunner {
 
     System.out.println("---- Populando o banco de dados com dados fictícios ----");
 
-    User owner = userRepository.findAll().stream()
-      .filter(u -> u.getRole() == USER_ROLE.ROLE_RESTAURANT_OWNER)
-      .findFirst()
-      .orElse(null);
-
-    if (owner == null) {
-      System.out.println("Nenhum usuário com a role ROLE_RESTAURANT_OWNER encontrado. Crie um primeiro.");
-      return;
-    }
+    // --- Criando 5 Donos de Restaurante ---
+    User owner1 = createOwner("dono1@rest.com", "João Silva");
+    User owner2 = createOwner("dono2@rest.com", "Maria Oliveira");
+    User owner3 = createOwner("dono3@rest.com", "Carlos Pereira");
+    User owner4 = createOwner("dono4@rest.com", "Ana Costa");
+    User owner5 = createOwner("dono5@rest.com", "Pedro Souza");
 
     // --- Restaurante 1: Hamburgueria (Menu Completo) ---
-    setupBurgerQueen(owner);
+    setupBurgerQueen(owner1);
 
     // --- Restaurante 2: Pizzaria ---
-    setupPizzaPalace(owner);
+    setupPizzaPalace(owner2);
 
     // --- Restaurante 3: Comida Japonesa ---
-    setupSushiHouse(owner);
+    setupSushiHouse(owner3);
 
     // --- Restaurante 4: Café & Doceria ---
-    setupSweetBeans(owner);
+    setupSweetBeans(owner4);
 
     // --- Restaurante 5: Comida Saudável ---
-    setupGreenLeaf(owner);
-
+    setupGreenLeaf(owner5);
 
     System.out.println("---- Banco de dados populado com sucesso com 5 restaurantes! ----");
+  }
+
+  private User createOwner(String email, String fullName) throws Exception {
+    User owner = new User();
+    owner.setEmail(email);
+    owner.setFullName(fullName);
+    owner.setPassword("password123");
+    owner.setRole(USER_ROLE.ROLE_RESTAURANT_OWNER);
+    authService.registerUser(owner);
+    return owner;
   }
 
   private void setupBurgerQueen(User owner) {
