@@ -13,6 +13,8 @@ import { getRestaurantCategories } from "../state/Restaurant/Action";
 import { getRestaurantsOrder } from "../state/AdminOrder/Action";
 import { useMediaQuery, IconButton } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
+import { RestaurantReviews } from "../components/AdminSidebar/RestaurantReviews";
+import { RestaurantChat } from "../components/AdminSidebar/RestaurantChat";
 
 export const Admin = () => {
   const dispatch = useDispatch();
@@ -71,6 +73,8 @@ export const Admin = () => {
           <Route path="/ingredients" element={<Ingredients />} />
           <Route path="/details" element={<Details />} />
           <Route path="/add_menu" element={<CreateMenuForm />} />
+          <Route path="/reviews" element={<RestaurantReviews />} />
+          <Route path="/chat" element={<RestaurantChat />} />
         </Routes>
       </div>
     </section>

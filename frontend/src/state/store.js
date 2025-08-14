@@ -10,6 +10,7 @@ import { ingredientsReducer } from "./Ingredients/Reducer";
 import { addressReducer } from "./Address/Reducer";
 import { adminReducer } from "./Admin/Reducer";
 import { reviewReducer } from "./Review/Reducer";
+import { chatReducer } from "./Chat/Reducer";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   address: addressReducer,
   admin: adminReducer,
   review: reviewReducer,
+  chat: chatReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

@@ -55,3 +55,18 @@ export const getUsersChats = () => async (dispatch) => {
     dispatch({ type: actions.GET_USERS_CHATS_FAILURE, payload: error.message });
   }
 };
+
+export const getRestaurantsChats = () => async (dispatch) => {
+  dispatch({ type: actions.GET_RESTAURANTS_CHATS_REQUEST });
+  try {
+    const { data } = await api.get(`/api/chats/restaurant`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+    });
+    dispatch({ type: actions.GET_RESTAURANTS_CHATS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: actions.GET_RESTAURANTS_CHATS_FAILURE,
+      payload: error.message,
+    });
+  }
+};

@@ -1,4 +1,5 @@
 import {
+  Chat,
   Close,
   Dashboard,
   DisplaySettings,
@@ -7,6 +8,7 @@ import {
   Logout,
   MenuBook,
   PointOfSale,
+  RateReview,
 } from "@mui/icons-material";
 import { Divider, Drawer, useMediaQuery, IconButton } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -20,6 +22,8 @@ const menu = [
   { title: "Menu", icon: <MenuBook />, path: "/menu" },
   { title: "Categoria", icon: <Fastfood />, path: "/category" },
   { title: "Ingredientes", icon: <Egg />, path: "/ingredients" },
+  { title: "Avaliações", icon: <RateReview />, path: "/reviews" },
+  { title: "Mensagens", icon: <Chat />, path: "/chat" },
   { title: "Detalhes", icon: <DisplaySettings />, path: "/details" },
   { title: "Sair", icon: <Logout />, path: "/" },
 ];
