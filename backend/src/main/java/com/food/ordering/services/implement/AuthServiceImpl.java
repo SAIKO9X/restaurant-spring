@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
   private final CartRepository cartRepository;
 
   @Override
-  public AuthResponse registerUser(User user) throws Exception {
+  public User createUser(User user) throws Exception {
     User emailExists = userRepository.findByEmail(user.getEmail());
 
     if (emailExists != null) {
@@ -47,6 +47,13 @@ public class AuthServiceImpl implements AuthService {
     cart.setCustomer(savedUser);
     cartRepository.save(cart);
 
+    return savedUser;
+  }
+
+  @Override
+  public AuthResponse registerUser(User user) throws Exception {
+    User savedUser = createUser(user);
+
     Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -54,12 +61,11 @@ public class AuthServiceImpl implements AuthService {
 
     AuthResponse authResponse = new AuthResponse();
     authResponse.setJwt(jwt);
-    authResponse.setMessage("User Registered if success");
+    authResponse.setMessage("User Registered successfully");
     authResponse.setRole(savedUser.getRole());
 
     return authResponse;
   }
-
 
   @Override
   public AuthResponse authenticateUser(LoginRequest request) {

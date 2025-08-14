@@ -69,8 +69,8 @@ public class DatabaseLoader implements CommandLineRunner {
     owner.setFullName(fullName);
     owner.setPassword("password123");
     owner.setRole(USER_ROLE.ROLE_RESTAURANT_OWNER);
-    authService.registerUser(owner);
-    return owner;
+
+    return authService.createUser(owner);
   }
 
   private void setupBurgerQueen(User owner) {

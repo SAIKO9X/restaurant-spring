@@ -7,10 +7,12 @@ import com.food.ordering.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class AdminDataLoader implements CommandLineRunner {
 
   private final UserRepository userRepository;
@@ -36,8 +38,7 @@ public class AdminDataLoader implements CommandLineRunner {
       admin.setPassword(adminPassword);
       admin.setRole(USER_ROLE.ROLE_ADMIN);
 
-      // Usa o serviço de registo para garantir que a senha é encriptada
-      authService.registerUser(admin);
+      authService.createUser(admin);
 
       System.out.println("---- Utilizador ADMIN criado com sucesso ----");
     } else {
