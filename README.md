@@ -4,7 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.2-brightgreen)
 ![React](https://img.shields.io/badge/React-18-blueviolet)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
-![GitHub Actions](https://img.shields.io/github/actions/workflow/status/SEU_USUARIO/SEU_REPOSITORIO/ci-backend.yml?branch=main)
+![GitHub Actions](https://img.shields.io/github/actions/workflow/status/SAIKO9X/restaurant-spring/ci-backend.yml?branch=main)
 
 Uma plataforma full-stack completa para pedidos de comida, construída com Spring Boot no backend e React no frontend. O projeto simula um ecossistema real com três tipos de utilizadores (Clientes, Donos de Restaurante e Administradores), cada um com o seu próprio painel e funcionalidades.
 
