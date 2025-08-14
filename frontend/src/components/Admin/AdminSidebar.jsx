@@ -1,20 +1,29 @@
 import {
-  Chat,
-  Close,
   Dashboard,
-  DisplaySettings,
-  Egg,
-  Fastfood,
-  Logout,
-  MenuBook,
   PointOfSale,
+  MenuBook,
+  Fastfood,
+  Egg,
+  DisplaySettings,
+  Logout,
   RateReview,
+  Chat,
 } from "@mui/icons-material";
-import { Divider, Drawer, useMediaQuery, IconButton } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  useMediaQuery,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Importe o useLocation
 import { logout } from "../../state/Authentication/Action";
-import { Fragment } from "react";
 
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
@@ -25,25 +34,89 @@ const menu = [
   { title: "Avaliações", icon: <RateReview />, path: "/reviews" },
   { title: "Mensagens", icon: <Chat />, path: "/chat" },
   { title: "Detalhes", icon: <DisplaySettings />, path: "/details" },
-  { title: "Sair", icon: <Logout />, path: "/" },
 ];
 
 export const AdminSidebar = ({ open, handleClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation(); // Hook para saber a rota atual
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
 
-  const handleNavigate = (item) => {
-    if (item.title === "Sair") {
-      dispatch(logout());
-      navigate("/");
-    } else {
-      navigate(`/admin/restaurants${item.path}`);
-    }
+  const handleNavigate = (path) => {
+    navigate(`/admin/restaurants${path}`);
     if (isSmallScreen && handleClose) {
       handleClose();
     }
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
+  const drawerContent = (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        pt: isSmallScreen ? 0 : 3,
+      }}
+    >
+      {/* Lista de navegação principal */}
+      <List sx={{ px: 2 }}>
+        {menu.map((item) => {
+          const isActive =
+            location.pathname === `/admin/restaurants${item.path}`;
+          return (
+            <ListItem key={item.title} disablePadding>
+              <ListItemButton
+                onClick={() => handleNavigate(item.path)}
+                sx={{
+                  borderRadius: 1,
+                  mb: 1,
+                  backgroundColor: isActive ? "secondary.main" : "transparent",
+                  color: isActive ? "black" : "inherit",
+                  "&:hover": {
+                    backgroundColor: isActive
+                      ? "secondary.dark"
+                      : "action.hover",
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: isActive ? "black" : "inherit" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
+
+      {/* Item de Logout no fundo */}
+      <Box sx={{ mt: "auto", px: 2, pb: 2 }}>
+        <Divider sx={{ mb: 2 }} />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              borderRadius: 1,
+              "&:hover": {
+                backgroundColor: "rgba(255, 0, 0, 0.1)",
+                color: "red",
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Sair" />
+          </ListItemButton>
+        </ListItem>
+      </Box>
+    </Box>
+  );
 
   return (
     <Drawer
@@ -59,34 +132,7 @@ export const AdminSidebar = ({ open, handleClose }) => {
         },
       }}
     >
-      <div>
-        {isSmallScreen && (
-          <div className="flex justify-end pr-2 pb-2">
-            <IconButton onClick={handleClose} sx={{ color: "white" }}>
-              <Close />
-            </IconButton>
-          </div>
-        )}
-
-        <div className="h-screen text-zinc-300 gap-8 flex flex-col lg:pt-10 pt-0">
-          {menu.map((item, index) => (
-            <Fragment key={index}>
-              <div
-                onClick={() => handleNavigate(item)}
-                className={`flex items-center px-5 space-x-5 cursor-pointer transition ${
-                  index === menu.length - 1
-                    ? "mt-auto hover:text-red-500 font-semibold"
-                    : "hover:text-zinc-500"
-                }`}
-              >
-                {item.icon}
-                <span>{item.title}</span>
-              </div>
-              <Divider sx={{ bgcolor: "gray" }} />
-            </Fragment>
-          ))}
-        </div>
-      </div>
+      {drawerContent}
     </Drawer>
   );
 };
