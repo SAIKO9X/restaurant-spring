@@ -2,8 +2,13 @@ package com.food.ordering.services.implement;
 
 import com.food.ordering.model.entities.*;
 import com.food.ordering.model.enums.OrderStatus;
-import com.food.ordering.repositories.*;
+import com.food.ordering.repositories.AddressRepository;
+import com.food.ordering.repositories.OrderItemRepository;
+import com.food.ordering.repositories.OrderRepository;
+import com.food.ordering.repositories.UserRepository;
 import com.food.ordering.request.OrderRequest;
+import com.food.ordering.response.AnalyticsResponse;
+import com.food.ordering.response.OrderResponse;
 import com.food.ordering.services.CartService;
 import com.food.ordering.services.OrderService;
 import com.food.ordering.services.RestaurantService;
@@ -11,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -121,5 +128,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     return order.get();
+  }
+
+  @Override
+  public AnalyticsResponse getRestaurantAnalytics(Long restaurantId, Date startDate, Date endDate) throws Exception {
+    List<Order> completedOrders = orderRepository.findByRestaurantIdAndOrderStatusAndCreatedAtBetween(
+      restaurantId, OrderStatus.DELIVERED, startDate, endDate
+    );
+
+    double totalRevenue = completedOrders.stream().mapToDouble(Order::getTotalPrice).sum();
+    long totalOrders = completedOrders.size();
+
+    List<OrderResponse> recentOrdersDTO = completedOrders.stream()
+      .map(OrderResponse::new)
+      .collect(Collectors.toList());
+
+    return new AnalyticsResponse(totalRevenue, totalOrders, recentOrdersDTO);
   }
 }

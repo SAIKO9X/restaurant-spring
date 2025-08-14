@@ -3,7 +3,9 @@ package com.food.ordering.services;
 import com.food.ordering.model.entities.Order;
 import com.food.ordering.model.entities.User;
 import com.food.ordering.request.OrderRequest;
+import com.food.ordering.response.AnalyticsResponse;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
@@ -19,4 +21,6 @@ public interface OrderService {
   public List<Order> getRestaurantsOrder(Long restaurantId, String orderStatus) throws Exception;
 
   public Order findOrderById(Long orderId) throws Exception;
+
+  AnalyticsResponse getRestaurantAnalytics(Long restaurantId, Date startDate, Date endDate) throws Exception;
 }

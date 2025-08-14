@@ -123,14 +123,17 @@ export const MenuTable = () => {
                   <TableCell align="left">{item.name}</TableCell>
                   <TableCell align="left">{item.price + " R$"}</TableCell>
                   <TableCell align="left">
-                    {item.ingredients.map((ingredient) => (
-                      <Chip
-                        key={ingredient.id}
-                        label={ingredient.name}
-                        size="small"
-                        color="secondary"
-                      />
-                    ))}
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {item.ingredients.map((ingredient) => (
+                        <Chip
+                          key={ingredient.id}
+                          label={ingredient.name}
+                          size="small"
+                          color="secondary"
+                          sx={{ mb: 0.5 }}
+                        />
+                      ))}
+                    </Box>
                   </TableCell>
                   <TableCell align="left">
                     {item.available ? "disponível" : "indisponível"}
