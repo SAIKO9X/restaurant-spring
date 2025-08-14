@@ -18,4 +18,25 @@ export const darkTheme = createTheme({
       secondary: "#b0b0b0",
     },
   },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "&:hover fieldset": {
+              borderColor: "#dcca87",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#dcca87",
+            },
+          },
+          "& .MuiInputLabel-root": {
+            "&.Mui-focused": {
+              color: "#dcca87",
+            },
+          },
+        },
+      },
+    },
+  },
 });

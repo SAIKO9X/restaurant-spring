@@ -88,11 +88,7 @@ export const ChatModal = ({ open, handleClose, chat }) => {
             onChange={(e) => setMessageContent(e.target.value)}
             label="Escreva uma mensagem..."
           />
-          <Button
-            variant="contained"
-            onClick={handleSendMessage}
-            endIcon={<Send />}
-          >
+          <Button onClick={handleSendMessage} endIcon={<Send />}>
             Enviar
           </Button>
         </Box>
