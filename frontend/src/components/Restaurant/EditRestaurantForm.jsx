@@ -1,10 +1,21 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { AddPhotoAlternate, Close } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
+import { uploadImageToCloudinary } from "../../config/UploadToCloudinary";
 import { updateRestaurant } from "../../state/Restaurant/Action";
+import { useState } from "react";
 
 export const EditRestaurantForm = ({ restaurant, onClose }) => {
   const dispatch = useDispatch();
+  const [uploadImage, setUploadImage] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -35,6 +46,21 @@ export const EditRestaurantForm = ({ restaurant, onClose }) => {
     },
   });
 
+  // Função para lidar com a adição de uma nova imagem
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    setUploadImage(true);
+    const image = await uploadImageToCloudinary(file);
+    formik.setFieldValue("images", [...formik.values.images, image]);
+    setUploadImage(false);
+  };
+
+  // Função para lidar com a remoção de uma imagem
+  const handleRemoveImage = (index) => {
+    const updatedImages = formik.values.images.filter((_, i) => i !== index);
+    formik.setFieldValue("images", updatedImages);
+  };
+
   return (
     <Box sx={{ p: 4 }}>
       <h1 className="font-bold 2xl:text-6xl lg:text-4xl text-2xl font-cormorant text-primary text-center pb-6">
@@ -42,7 +68,57 @@ export const EditRestaurantForm = ({ restaurant, onClose }) => {
       </h1>
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         <Grid container spacing={2}>
-          {/* Informações do restaurante */}
+          {/* --- SECÇÃO DE GESTÃO DE IMAGENS --- */}
+          <Grid item xs={12}>
+            <div className="flex flex-wrap items-center gap-5">
+              <input
+                accept="image/*"
+                type="file"
+                id="fileInput"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+              />
+              <label className="relative" htmlFor="fileInput">
+                <span className="w-24 h-24 cursor-pointer flex items-center justify-center p-3 border rounded-md border-zinc-600">
+                  <AddPhotoAlternate className="text-white" />
+                </span>
+                {uploadImage && (
+                  <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center">
+                    <CircularProgress color="secondary" />
+                  </div>
+                )}
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {formik.values.images.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      className="w-24 h-24 object-cover rounded"
+                      src={image}
+                      alt="Foto do Restaurante"
+                    />
+                    <IconButton
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        outline: "none",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        "&:hover": {
+                          backgroundColor: "rgba(0,0,0,0.8)",
+                        },
+                      }}
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      <Close sx={{ fontSize: "1rem", color: "white" }} />
+                    </IconButton>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Grid>
+
+          {/* --- FORMULÁRIO --- */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -91,8 +167,6 @@ export const EditRestaurantForm = ({ restaurant, onClose }) => {
               value={formik.values.openingHours}
             />
           </Grid>
-
-          {/* Endereço */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -141,8 +215,6 @@ export const EditRestaurantForm = ({ restaurant, onClose }) => {
               value={formik.values.address.postalCode}
             />
           </Grid>
-
-          {/* Contatos */}
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth

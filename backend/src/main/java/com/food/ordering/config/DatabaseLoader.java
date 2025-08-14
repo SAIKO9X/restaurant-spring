@@ -86,7 +86,11 @@ public class DatabaseLoader implements CommandLineRunner {
       "A melhor hamburgueria da cidade com blends artesanais e ingredientes frescos.",
       "Hamburgueria",
       "Seg-Dom: 18:00 - 23:30",
-      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2072&auto=format&fit=crop",
+      List.of(
+        "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2072&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=2070&auto=format&fit=crop"
+      ),
       owner,
       address);
 
@@ -124,10 +128,10 @@ public class DatabaseLoader implements CommandLineRunner {
       "https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=2070&auto=format&fit=crop");
 
     createFood("Batata Frita", "Porção individual de batatas fritas crocantes.", 15.00, catPorcoes, r1, true, true,
-      Collections.emptyList(), "https://images.unsplash.com/photo-1576107232684-c7be351b5ab2?q=80&w=1974&auto=format&fit=crop");
+      Collections.emptyList(), "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
 
     createFood("Coca-Cola", "Lata 350ml", 5.00, catBebidas, r1, true, true, Collections.emptyList(),
-      "https://images.unsplash.com/photo-1622483767028-3f66f32a2ea7?q=80&w=1974&auto=format&fit=crop");
+      "https://images.unsplash.com/photo-1527960392543-80cd0fa46382?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
   }
 
   private void setupPizzaPalace(User owner) {
@@ -143,7 +147,7 @@ public class DatabaseLoader implements CommandLineRunner {
       "Pizzas com massa de fermentação natural e ingredientes frescos.",
       "Pizzaria",
       "Ter-Dom: 19:00 - 00:00",
-      "https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop",
+      List.of("https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop"),
       owner,
       address);
 
@@ -165,7 +169,7 @@ public class DatabaseLoader implements CommandLineRunner {
       "O melhor da culinária japonesa tradicional e contemporânea.",
       "Japonesa",
       "Qua-Sab: 19:00 - 23:00",
-      "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2070&auto=format&fit=crop",
+      List.of("https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2070&auto=format&fit=crop"),
       owner,
       address
     );
@@ -184,7 +188,7 @@ public class DatabaseLoader implements CommandLineRunner {
       "Cafés especiais, doces incríveis e um ambiente acolhedor.",
       "Cafeteria",
       "Seg-Sex: 08:00 - 19:00",
-      "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto=format&fit=crop",
+      List.of("https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto=format&fit=crop"),
       owner,
       address
     );
@@ -203,13 +207,13 @@ public class DatabaseLoader implements CommandLineRunner {
       "Comida saudável que abraça. Saladas, bowls e sucos naturais.",
       "Saudável",
       "Seg-Sab: 11:00 - 15:00",
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop",
+      List.of("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop"),
       owner,
       address
     );
   }
 
-  private Restaurant createRestaurant(String name, String description, String cuisine, String hours, String imageUrl, User owner, Address address) {
+  private Restaurant createRestaurant(String name, String description, String cuisine, String hours, List<String> imageUrls, User owner, Address address) {
     Address savedAddress = addressRepository.save(address);
 
     Restaurant restaurant = new Restaurant();
@@ -217,7 +221,7 @@ public class DatabaseLoader implements CommandLineRunner {
     restaurant.setDescription(description);
     restaurant.setCuisineType(cuisine);
     restaurant.setOpeningHours(hours);
-    restaurant.setImages(Collections.singletonList(imageUrl));
+    restaurant.setImages(imageUrls);
     restaurant.setOwner(owner);
     restaurant.setAddress(savedAddress);
     restaurant.setContact(new ContactInformation("contato@" + name.toLowerCase().replace(" ", "") + ".com", "(11) 99999-9999", "", "", ""));

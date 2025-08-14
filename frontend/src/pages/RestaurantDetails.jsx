@@ -11,7 +11,7 @@ import {
   Rating,
   Typography,
 } from "@mui/material";
-import { Chat, LocationOn, Today } from "@mui/icons-material";
+import { LocationOn, Today, Chat } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { MenuCard } from "../components/Restaurant/MenuCard";
 import { useParams } from "react-router-dom";
@@ -43,34 +43,24 @@ export const RestaurantDetails = () => {
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
 
-  const handleReviewSubmit = (e) => {
-    e.preventDefault();
-    const reviewData = {
-      restaurantId: id,
-      rating: rating,
-      comment: reviewText,
-    };
-    dispatch(submitReview(reviewData));
-    setReviewText("");
-    setRating(0);
-  };
-
-  const handleOpenChat = async () => {
-    try {
-      const chat = await dispatch(createChat(id));
-      setSelectedChat(chat);
-      setOpenChat(true);
-    } catch (error) {
-      console.error("Failed to create or open chat", error);
-    }
-  };
-
   const [filters, setFilters] = useState({
     vegetarian: false,
     noVegetarian: false,
     seasonal: false,
     food_category: "all",
   });
+
+  const handleOpenChat = async () => {
+    if (auth.user) {
+      try {
+        const chat = await dispatch(createChat(id));
+        setSelectedChat(chat);
+        setOpenChat(true);
+      } catch (error) {
+        console.error("Failed to create or open chat", error);
+      }
+    }
+  };
 
   const handleFoodTypeChange = (e) => {
     const value = e.target.value;
@@ -92,6 +82,18 @@ export const RestaurantDetails = () => {
     }));
   };
 
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    const reviewData = {
+      restaurantId: id,
+      rating: rating,
+      comment: reviewText,
+    };
+    dispatch(submitReview(reviewData));
+    setReviewText("");
+    setRating(0);
+  };
+
   useEffect(() => {
     dispatch(getRestaurantById({ restaurantId: id }));
     dispatch(getRestaurantCategories(id));
@@ -99,31 +101,81 @@ export const RestaurantDetails = () => {
     dispatch(getRestaurantReviews(id));
   }, [dispatch, id, filters]);
 
+  const renderImages = () => {
+    const images = restaurant.restaurant?.images;
+
+    if (!images || images.length === 0) {
+      return null;
+    }
+
+    // Layout para 1 imagem
+    if (images.length === 1) {
+      return (
+        <Grid item xs={12}>
+          <img
+            className="w-full h-[40vh] object-cover"
+            src={images[0]}
+            alt={restaurant.restaurant?.name}
+          />
+        </Grid>
+      );
+    }
+
+    // Layout para 2 imagens
+    if (images.length === 2) {
+      return (
+        <>
+          <Grid item xs={12} md={6}>
+            <img
+              className="w-full h-[40vh] object-cover"
+              src={images[0]}
+              alt={restaurant.restaurant?.name}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <img
+              className="w-full h-[40vh] object-cover"
+              src={images[1]}
+              alt={restaurant.restaurant?.name}
+            />
+          </Grid>
+        </>
+      );
+    }
+
+    // Layout padrão para 3 ou mais imagens
+    return (
+      <>
+        <Grid item xs={12}>
+          <img
+            className="w-full h-[40vh] object-cover"
+            src={images[0]}
+            alt={restaurant.restaurant?.name}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <img
+            className="w-full h-[40vh] object-cover"
+            src={images[1]}
+            alt={restaurant.restaurant?.name}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <img
+            className="w-full h-[40vh] object-cover"
+            src={images[2]}
+            alt={restaurant.restaurant?.name}
+          />
+        </Grid>
+      </>
+    );
+  };
+
   return (
     <section className="px-5 lg:px-20 pt-20">
       <div>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[0]}
-              alt="Restaurant Image"
-            />
-          </Grid>
-          <Grid item xs={12} lg={6}>
-            <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[1]}
-              alt="Restaurant Image"
-            />
-          </Grid>
-          <Grid item xs={12} lg={6}>
-            <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[2]}
-              alt="Restaurant Image"
-            />
-          </Grid>
+          {renderImages()}
         </Grid>
       </div>
 
@@ -135,15 +187,14 @@ export const RestaurantDetails = () => {
         <p className="text-zinc-500 flex items-center gap-3">
           <LocationOn />
           <span>
-            {restaurant.restaurant?.address.streetAddress},{" "}
-            {restaurant.restaurant?.address.city}
+            {restaurant.restaurant?.address?.streetAddress},{" "}
+            {restaurant.restaurant?.address?.city}
           </span>
         </p>
         <p className="text-zinc-500 flex items-center gap-3">
           <Today />
           <span>{restaurant.restaurant?.openingHours}</span>
         </p>
-
         <Button
           variant="outlined"
           color="secondary"
@@ -163,7 +214,6 @@ export const RestaurantDetails = () => {
               <h3 className="text-2xl font-cormorant text-primary font-semibold mb-4">
                 Tipo de Comida
               </h3>
-
               <FormControl className="py-10 space-y-5" component={"fieldset"}>
                 <RadioGroup
                   onChange={handleFoodTypeChange}
@@ -181,14 +231,11 @@ export const RestaurantDetails = () => {
                 </RadioGroup>
               </FormControl>
             </div>
-
             <Divider />
-
             <div>
               <h3 className="text-2xl font-cormorant text-primary font-semibold mb-4">
                 Categoria de Comida
               </h3>
-
               <FormControl className="py-10 space-y-5" component={"fieldset"}>
                 <RadioGroup
                   onChange={handleCategoryChange}
@@ -213,7 +260,6 @@ export const RestaurantDetails = () => {
             </div>
           </div>
         </div>
-
         <div className="space-y-5 lg:w-4/5 lg:pl-10">
           {menu.menuItems.map((item) => (
             <MenuCard key={item.id} item={item} />
@@ -231,8 +277,6 @@ export const RestaurantDetails = () => {
         >
           Avaliações e Comentários
         </Typography>
-
-        {/* Formulário para Nova Avaliação */}
         {auth.user && (
           <Box component="form" onSubmit={handleReviewSubmit} sx={{ mb: 4 }}>
             <Typography variant="h6">Deixe a sua avaliação</Typography>
@@ -249,7 +293,6 @@ export const RestaurantDetails = () => {
               rows={4}
               label="Escreva o seu comentário..."
               variant="outlined"
-              color="secondary"
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               sx={{ my: 2 }}
@@ -259,8 +302,6 @@ export const RestaurantDetails = () => {
             </Button>
           </Box>
         )}
-
-        {/* Lista de Avaliações */}
         {review.reviews.map((item) => (
           <ReviewCard key={item.id} review={item} />
         ))}
