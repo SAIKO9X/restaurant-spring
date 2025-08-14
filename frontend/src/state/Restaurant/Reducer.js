@@ -97,7 +97,7 @@ export const restaurantReducer = (state = initialState, action) => {
         error: action.payload,
       };
     case actions.GET_TOP_RATED_RESTAURANTS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload, topRated: [] };
 
     default:
       return state;

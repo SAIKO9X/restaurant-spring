@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { Header } from "../components/Header/Header";
 import { RestaurantCard } from "../components/Restaurant/RestaurantCard";
 import { MenuCard } from "../components/Menu/MenuCard";
@@ -14,12 +14,7 @@ import { getTopOrderedFoods } from "../state/Menu/Action";
 export const Home = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { restaurant, menu } = useSelector((store) => store);
-  const [tabValue, setTabValue] = useState(0);
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  const { restaurant, menu, auth } = useSelector((store) => store);
 
   useEffect(() => {
     if (jwt) {
@@ -31,75 +26,87 @@ export const Home = () => {
   }, [dispatch, jwt]);
 
   return (
-    <section className="pt-16">
+    <Box className="pt-16">
       <Header />
-      <div className="px-5 lg:px-20 pt-10">
-        {jwt ? (
-          <>
-            <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }}>
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                textColor="secondary"
-                indicatorColor="secondary"
-                aria-label="seções da página inicial"
+      <Box className="px-5 lg:px-20 pt-10">
+        {auth.user ? (
+          <Box className="space-y-12 pb-10">
+            {/* Secção: Restaurantes Mais Bem Avaliados */}
+            <section>
+              <Typography
+                variant="h4"
+                className="capitalize font-cormorant font-semibold text-gray-400 pb-8"
               >
-                <Tab label="Restaurantes" />
-                <Tab label="Pratos Mais Pedidos" />
-                <Tab label="Melhores Avaliados" />
-              </Tabs>
-            </Box>
-
-            {/* Conteúdo da Aba 0: Todos os Restaurantes */}
-            {tabValue === 0 && (
-              <section>
-                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
-                  Peça nos restaurantes selecionados
-                </h1>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {restaurant.restaurants.map((item) => (
+                Os Favoritos da Comunidade
+              </Typography>
+              <Box className="flex flex-wrap gap-4 justify-center">
+                {restaurant.topRated?.length > 0 ? (
+                  restaurant.topRated.map((item) => (
                     <RestaurantCard key={item.id} item={item} />
-                  ))}
-                </div>
-              </section>
-            )}
+                  ))
+                ) : (
+                  <Typography color="text.secondary">
+                    Ainda não há restaurantes bem avaliados para mostrar.
+                  </Typography>
+                )}
+              </Box>
+            </section>
 
-            {/* Conteúdo da Aba 1: Pratos Mais Pedidos */}
-            {tabValue === 1 && (
-              <section>
-                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
-                  Os pratos que todos amam
-                </h1>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {menu.topOrderedFoods.map((item) => (
+            <Divider />
+
+            {/* Secção: Pratos Mais Pedidos */}
+            <section>
+              <Typography
+                variant="h4"
+                className="capitalize font-cormorant font-semibold text-gray-400 pb-8"
+              >
+                Os Pratos que Todos Amam
+              </Typography>
+              <Box className="flex flex-wrap gap-4 justify-center">
+                {menu.topOrderedFoods?.length > 0 ? (
+                  menu.topOrderedFoods.map((item) => (
                     <MenuCard key={item.id} item={item} />
-                  ))}
-                </div>
-              </section>
-            )}
+                  ))
+                ) : (
+                  <Typography color="text.secondary">
+                    Assim que os pedidos começarem, os pratos mais populares
+                    aparecerão aqui.
+                  </Typography>
+                )}
+              </Box>
+            </section>
 
-            {/* Conteúdo da Aba 2: Restaurantes Mais Bem Avaliados */}
-            {tabValue === 2 && (
-              <section>
-                <h1 className="text-2xl lg:text-4xl capitalize font-cormorant font-semibold text-gray-400 pb-8">
-                  Os favoritos da comunidade
-                </h1>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {restaurant.topRated.map((item) => (
+            <Divider />
+
+            {/* Secção: Todos os Restaurantes */}
+            <section>
+              <Typography
+                variant="h4"
+                className="capitalize font-cormorant font-semibold text-gray-400 pb-8"
+              >
+                Peça nos Nossos Restaurantes
+              </Typography>
+              <Box className="flex flex-wrap gap-4 justify-center">
+                {restaurant.restaurants?.length > 0 ? (
+                  restaurant.restaurants.map((item) => (
                     <RestaurantCard key={item.id} item={item} />
-                  ))}
-                </div>
-              </section>
-            )}
-          </>
+                  ))
+                ) : (
+                  <Typography color="text.secondary">
+                    Nenhum restaurante disponível no momento.
+                  </Typography>
+                )}
+              </Box>
+            </section>
+          </Box>
         ) : (
-          <div className="h-screen flex items-center justify-center">
+          <Box className="h-screen flex items-center justify-center">
             <Typography variant="h4" className="font-cormorant text-gray-400">
               Faça login para descobrir os melhores sabores.
             </Typography>
-          </div>
+          </Box>
         )}
-      </div>
-    </section>
+      </Box>
+    </Box>
   );
 };

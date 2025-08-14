@@ -43,10 +43,8 @@ export const OrderTable = ({ filterValue }) => {
   const restaurantId = restaurant?.restaurant?.id;
 
   useEffect(() => {
-    if (restaurantId) {
-      dispatch(getRestaurantsOrder(restaurantId, filterValue));
-    }
-  }, [dispatch, restaurantId, filterValue]);
+    dispatch(getRestaurantsOrder(filterValue));
+  }, [dispatch, filterValue]);
 
   const handleUpdateOrder = (orderId, orderStatus) => {
     dispatch(updateOrderStatus(orderId, orderStatus));
