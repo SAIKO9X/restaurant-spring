@@ -49,6 +49,10 @@ export const cartReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         cartItems: [...state.cartItems, action.payload],
+        cart: {
+          ...state.cart,
+          items: [...(state.cart?.items || []), action.payload],
+        },
       };
 
     case actions.UPDATE_CART_ITEM_SUCCESS:
@@ -58,15 +62,20 @@ export const cartReducer = (state = initialState, action) => {
         cartItems: state.cartItems.map((item) =>
           item.id === action.payload.id ? action.payload : item
         ),
+        cart: {
+          ...state.cart,
+          items: state.cart.items.map((item) =>
+            item.id === action.payload.id ? action.payload : item
+          ),
+        },
       };
 
     case actions.REMOVE_CART_ITEM_SUCCESS:
       return {
         ...state,
         loading: false,
-        cartItems: state.cartItems.filter(
-          (item) => item.id !== action.payload.id
-        ),
+        cart: action.payload,
+        cartItems: action.payload.items,
       };
 
     case actions.FIND_CART_FAILURE:

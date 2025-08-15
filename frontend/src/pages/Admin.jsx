@@ -23,11 +23,11 @@ export const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (restaurant?.id) {
-      dispatch(getRestaurantCategories(restaurant.id));
-      dispatch(getRestaurantsOrder(restaurant.id));
+    if (restaurant.restaurant?.id) {
+      dispatch(getRestaurantCategories(restaurant.restaurant.id));
+      dispatch(getRestaurantsOrder());
     }
-  }, [dispatch, restaurant]);
+  }, [dispatch, restaurant.restaurant]);
 
   const handleClose = () => {
     setSidebarOpen(false);
@@ -40,7 +40,6 @@ export const Admin = () => {
   return (
     <section className="flex">
       <AdminSidebar open={sidebarOpen} handleClose={handleClose} />
-
       <div
         className={`flex-grow ${
           isSmallScreen && sidebarOpen
@@ -54,6 +53,7 @@ export const Admin = () => {
           <IconButton
             onClick={handleOpen}
             sx={{
+              position: "absolute",
               top: 10,
               left: 10,
               color: "white",

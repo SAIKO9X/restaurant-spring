@@ -39,26 +39,30 @@ const statusMap = {
 
 export const OrderTable = ({ filterValue }) => {
   const dispatch = useDispatch();
-  const { restaurantOrder, restaurant } = useSelector((store) => store);
-  const restaurantId = restaurant?.restaurant?.id;
+  const { restaurantOrder } = useSelector((store) => store);
+
+  // --- ESTADO MODIFICADO PARA GERIR O MENU ---
+  const [menuState, setMenuState] = useState({
+    anchorEl: null,
+    orderId: null,
+  });
 
   useEffect(() => {
     dispatch(getRestaurantsOrder(filterValue));
   }, [dispatch, filterValue]);
 
-  const handleUpdateOrder = (orderId, orderStatus) => {
-    dispatch(updateOrderStatus(orderId, orderStatus));
-    handleClose();
-  };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  // --- HANDLERS MODIFICADOS ---
+  const handleClick = (event, orderId) => {
+    setMenuState({ anchorEl: event.currentTarget, orderId: orderId });
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setMenuState({ anchorEl: null, orderId: null });
+  };
+
+  const handleUpdateOrder = (orderId, orderStatus) => {
+    dispatch(updateOrderStatus(orderId, orderStatus));
+    handleClose();
   };
 
   return (
@@ -102,7 +106,7 @@ export const OrderTable = ({ filterValue }) => {
                       {item.id}
                     </TableCell>
                     <TableCell align="right">
-                      <AvatarGroup>
+                      <AvatarGroup max={3}>
                         {item.items?.map((orderItem) => (
                           <Avatar
                             key={orderItem.id}
@@ -114,9 +118,7 @@ export const OrderTable = ({ filterValue }) => {
                     <TableCell align="right">
                       {item.customer?.fullName}
                     </TableCell>
-                    <TableCell align="right">
-                      {item.totalPrice + "R$"}
-                    </TableCell>
+                    <TableCell align="right">{item.totalPrice} R$</TableCell>
                     <TableCell align="right">
                       {item.items?.map((orderItem) => (
                         <p key={orderItem.id}>{orderItem.food?.name}</p>
@@ -124,15 +126,25 @@ export const OrderTable = ({ filterValue }) => {
                     </TableCell>
                     <TableCell align="right">
                       {item.items?.map((orderItem) => (
-                        <div key={orderItem.id}>
-                          {orderItem.ingredients?.map((ingredient) => (
+                        <Box
+                          key={orderItem.id}
+                          sx={{
+                            mb: 1,
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          {orderItem.ingredients?.map((ingredient, index) => (
                             <Chip
-                              key={ingredient.id}
+                              key={index}
                               label={ingredient}
                               color="secondary"
+                              size="small"
                             />
                           ))}
-                        </div>
+                        </Box>
                       ))}
                     </TableCell>
                     <TableCell align="right">
@@ -140,22 +152,28 @@ export const OrderTable = ({ filterValue }) => {
                     </TableCell>
                     <TableCell align="right">
                       <Button
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
+                        id={`basic-button-${item.id}`}
                         aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={handleClick}
+                        // Passa o evento e o ID do pedido para o handler
+                        onClick={(event) => handleClick(event, item.id)}
                         color="secondary"
                       >
                         atualizar
                       </Button>
                       <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
+                        id={`basic-menu-${item.id}`}
+                        // O menu só abre para o pedido que foi clicado
+                        anchorEl={
+                          menuState.orderId === item.id
+                            ? menuState.anchorEl
+                            : null
+                        }
+                        open={Boolean(
+                          menuState.anchorEl && menuState.orderId === item.id
+                        )}
                         onClose={handleClose}
                         MenuListProps={{
-                          "aria-labelledby": "basic-button",
+                          "aria-labelledby": `basic-button-${item.id}`,
                         }}
                       >
                         {orderStatus.map((status) => (
