@@ -1,19 +1,10 @@
 import * as actions from "./ActionType";
 import api, { API_RESTAURANT_URL } from "../../config/api";
 
-const getAuthorizationHeader = () => {
-  const jwt = localStorage.getItem("jwt");
-  return jwt ? { Authorization: `Bearer ${jwt}` } : {};
-};
-
 export const getAllRestaurants = () => async (dispatch) => {
   dispatch({ type: actions.GET_ALL_RESTAURANTS_REQUEST });
   try {
-    const { data } = await api.get("/api/restaurants", {
-      headers: {
-        ...getAuthorizationHeader(),
-      },
-    });
+    const { data } = await api.get("/api/restaurants");
 
     dispatch({ type: actions.GET_ALL_RESTAURANTS_SUCCESS, payload: data });
   } catch (error) {

@@ -16,6 +16,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
   List<Restaurant> findAllByApprovedTrueAndActiveTrue();
 
-  @Query("SELECT r FROM Restaurant r JOIN FETCH r.reviews rev WHERE r.approved = true AND r.active = true GROUP BY r.id ORDER BY AVG(rev.rating) DESC")
+  @Query("SELECT r FROM Restaurant r JOIN r.reviews rev WHERE r.approved = true AND r.active = true GROUP BY r.id ORDER BY AVG(rev.rating) DESC")
   List<Restaurant> findTopRatedRestaurants(org.springframework.data.domain.Pageable pageable);
+
 }

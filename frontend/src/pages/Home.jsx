@@ -17,11 +17,12 @@ export const Home = () => {
   const { restaurant, menu, auth } = useSelector((store) => store);
 
   useEffect(() => {
+    dispatch(getAllRestaurants());
+    dispatch(getTopOrderedFoods(5));
+    dispatch(getTopRatedRestaurants(5));
+
     if (jwt) {
-      dispatch(getAllRestaurants(jwt));
       dispatch(findCart(jwt));
-      dispatch(getTopOrderedFoods(5));
-      dispatch(getTopRatedRestaurants(5));
     }
   }, [dispatch, jwt]);
 
@@ -31,7 +32,7 @@ export const Home = () => {
       <Box className="px-5 lg:px-20 pt-10">
         {auth.user ? (
           <Box className="space-y-12 pb-10">
-            {/* Secção: Restaurantes Mais Bem Avaliados */}
+            {/* Seção: Restaurantes Mais Bem Avaliados */}
             <section>
               <Typography
                 variant="h4"
